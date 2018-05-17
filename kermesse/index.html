@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Préparation de la kermesse - Amicale Laïque de Bébard</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+	<link href="//gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+	<link href="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" rel="stylesheet">
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+	<script src="//io.datasync.orange.com/js/latest/webcom.js"></script>
+	<script src="//gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+	<script src="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/showdown/1.8.5/showdown.min.js"></script>
+    <style>
+	</style>
+	<script>
+	$.urlParam = function(name){
+      var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+      if (results==null){
+		return null;
+      } else{
+		return decodeURIComponent(results[1]) || 0;
+      }
+	}
+	$(function() {
+	  const newsMDE = new SimpleMDE({ element: $("#edit-news-content")[0], spellChecker: false });
+	  $("#edit-news").on('shown.bs.modal', () => {
+		newsMDE.codemirror.refresh();
+	  });
+	  const todoMDE = new SimpleMDE({ element: $("#edit-progression")[0], spellChecker: false });
+	  $("#edit-todo").on('shown.bs.modal', () => {
+		todoMDE.codemirror.refresh();
+	  });
+	  const stallMDE = new SimpleMDE({ element: $("#edit-stall-description")[0], spellChecker: false });
+	  $("#edit-stall").on('shown.bs.modal', () => {
+		stallMDE.codemirror.refresh();
+	  });
+	  const mdConverter = new showdown.Converter();
+	  
+	  $("#edit-action-done").bootstrapToggle({
+		on: 'Oui',
+		off: 'Non'
+      });
+	  
+	  const ref = new Webcom("https://io.datasync.orange.com/base/alb");
+	  let todos;
+	  let planning;
+	  let news={};
+	  
+	  ref.child("kermesse").child("planning").on("value", (snapshot) => {
+		planning = snapshot.val();
+		for (let day in planning) {
+		  if ($("#planning-"+day).length) {
+			$("#planning-"+day).empty();
+			for (let stall in planning[day]) {
+			  const infos = planning[day][stall];
+			  const tr = $("<tr>");
+			  const registered = infos.registered || [];
+			  console.log(day, stall, registered.length);
+			  let c;
+			  if (registered.length < infos.min) {
+				c="danger";
+			  } else {
+				c="success";
+			  }
+			  if (registered.length >= (infos.min/2)) {
+				c="warning";
+			  }
+			  tr.addClass(c);
+			  tr.append($("<td>").text(stall));
+			  tr.append($("<td>").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
+			  tr.append($("<td>").text(infos.where));
+			  tr.append($("<td>").text(infos.description).css("white-space", "pre"));
+			  tr.append($("<td>").text(infos.min));
+			  tr.append($("<td>").text(""));
+			  tr.append($("<td>")
+				.append($("<button>").attr("title", "Modifier").addClass("edit btn btn-default btn-xs btn-warning").attr("day", day).attr("stall",stall).append($("<span>").addClass("glyphicon glyphicon-edit"))).addClass(c)
+				.append("&nbsp;")
+				.append($("<button>").attr("title", "Supprimer").addClass("delete btn btn-default btn-xs btn-danger").attr("day", day).attr("stall",stall).append($("<span>").addClass("glyphicon glyphicon-remove"))).addClass(c));
+			  
+			  $("#planning-"+day).append(tr);
+			}
+		  } else {
+			console.log("Pas d'élément dans la page pour la journée "+day);
+		  }
+		}
+	  });
+
+	  $("#planning").on("click", "button.edit", (e) => {
+		const day = $(e.target).attr("day");
+		const stall = $(e.target).attr("stall");
+		const infos = planning[day][stall];
+		
+		$("#edit-stall-error").hide();
+		$("#edit-stall-name").attr("day", day).attr("stall", stall).val(stall).removeAttr("disabled");//.attr("disabled", "disabled");
+		$("#edit-stall-where").val(infos.where);
+		$("#edit-stall-min").val(infos.min);
+		$("#edit-stall-start").val(infos.start);
+		$("#edit-stall-end").val(infos.end);
+		//$("#edit-stall-description").val(infos.description);
+		stallMDE.value(infos.description);
+		$("#edit-stall").modal("show");
+	  });
+
+	  $("#planning").on("click", "button.delete", (e) => {
+		const day = $(e.target).attr("day");
+		const stall = $(e.target).attr("stall");
+		bootbox.confirm("Voulez-vous vraiment supprimer cette entrée ?", result =>{
+		  if (result) {
+			ref.child("kermesse").child("planning").child(day).child(stall).remove();
+		  }
+		});
+	  });
+	  
+	  $(".add-stall").on("click", (e) => {
+		const day = $(e.target).attr("day");
+		$("#edit-stall-error").hide();
+
+		$("#edit-stall-name").attr("day", day).val("").removeAttr("disabled", "disabled");
+		$("#edit-stall-where").val("");
+		$("#edit-stall-min").val(4);
+		$("#edit-stall-start").val(14);
+		$("#edit-stall-end").val(18);
+		//$("#edit-stall-description").val("");
+		stallMDE.value("");
+		$("#edit-stall").modal("show");
+	  });
+
+	  $("#edit-stall-save").on("click", (e) => {
+		const stall = $("#edit-stall-name").val();
+		const originalStall = $("#edit-stall-name").attr("stall");
+		const day = $("#edit-stall-name").attr("day");
+		
+		if (! stall) {
+		  $("#edit-stall-error").text("Merci de donner un nom à la rubrique").show();
+		} else {
+		  const infos = {
+			where: $("#edit-stall-where").val(),
+			min: $("#edit-stall-min").val(),
+			start: $("#edit-stall-start").val(),
+			end: $("#edit-stall-end").val(),
+			description: stallMDE.value() //$("#edit-stall-description").val()
+		  };
+		  if (planning[day][originalStall] && originalStall != stall) {
+			console.log("rename", originalStall, stall);
+			ref.child("kermesse").child("planning").child(day).child(originalStall).remove();
+		  }
+		  
+		  ref.child("kermesse").child("planning").child(day).child(stall).set(
+			infos,
+			(error) => {
+			  if (error) {
+				$("#edit-stall-error").text(error).show();
+			  } else {
+				$("#edit-stall").modal("hide");
+			  }
+			}
+		  );
+		}
+	  });
+	  
+	  ref.child("kermesse").child("todo").on("value", (snapshot) => {
+		todos = snapshot.val();
+		$("#todo").empty();
+		let total_actions = 0;
+		let done_actions = 0;
+		for (let group in todos) {
+		  let first_tr;
+		  let actions=0;
+		  for (let action in todos[group]) {
+			const infos = todos[group][action];
+			const tr = $("<tr>");
+			let c = infos.done ? "success" : "warning";
+			if (infos.done) {
+			  done_actions++;
+			} else if (! infos.who || ! infos.progression) {
+			  c = "danger";
+			}
+			total_actions++;
+			if (actions===0) {
+			  first_tr=tr;
+			  tr.append(
+				$("<td>")
+				  .append($("<span>").text(group+" "))
+				  .append($("<button>").attr("title", "Ajouter une action").addClass("add btn btn-default btn-xs").attr("group", group).append($("<span>").addClass("glyphicon glyphicon-plus"))));
+			};
+			tr.append($("<td>").text(action).addClass(c));
+			tr.append($("<td>").text(infos.who).addClass(c));
+			tr.append($("<td>").text(infos.progression).css("white-space", "pre").addClass(c));
+			tr.append($("<td>")
+			  .append($("<button>").attr("title", "Modifier l'action").addClass("edit btn btn-default btn-xs btn-warning").attr("group", group).attr("action",action).append($("<span>").addClass("glyphicon glyphicon-edit"))).addClass(c)
+			  .append("&nbsp;")
+			  .append($("<button>").attr("title", "Supprimer l'action").addClass("delete btn btn-default btn-xs btn-danger").attr("group", group).attr("action",action).append($("<span>").addClass("glyphicon glyphicon-remove"))).addClass(c));
+			$("#todo").append(tr);
+			actions++;
+		  }
+		  first_tr.find("td").first().attr('rowspan', actions);
+		}
+		$("#todo-done").text(done_actions);
+		$("#todo-todo").text(total_actions);
+	  });
+	  
+	  
+	  $("#edit-todo-save").on("click", (e) => {
+		const group = $("#edit-group-name").val();
+		const action = $("#edit-action-name").val();
+		const originalAction = $("#edit-action-name").attr("action");
+		
+		const progression = todoMDE.value();
+		const done = $('#edit-action-done').prop('checked');
+		const who = $("#edit-who").val();
+
+		if (!group) {
+		  $("#edit-todo-error").text("Merci de donner un nom à la rubrique").show();
+		} else if (!action) {
+		  $("#edit-todo-error").text("Merci de renseigner le nom de l'action").show();
+		} else {
+		  console.log("save", group, action, progression, done);
+		  
+		  if (todos[group][originalAction] && originalAction != action) {
+			console.log("rename", originalAction, action);
+			ref.child("kermesse").child("todo").child(group).child(originalAction).remove();
+		  }
+		  
+		  ref.child("kermesse").child("todo").child(group).child(action).set(
+			{
+			  progression: progression,
+			  done: done,
+			  who: who
+			},
+			(error) => {
+			  if (error) {
+				$("#edit-todo-error").text(error).show();
+			  } else {
+				$("#edit-todo").modal("hide");
+			  }
+			}
+		  );
+		}
+	  });
+	  
+	  
+	  $("#add-todo").on("click", (e) => {
+		$("#edit-group-name").val("").removeAttr("disabled");
+		$("#edit-action-name").val("").removeAttr("disabled");
+		//$("#edit-progression").val("");
+		todoMDE.value("");
+		$('#edit-action-done').bootstrapToggle('off');
+		$("#edit-todo").modal("show");
+	  });
+	  
+	  $("#todo").on("click", "button.add", (e) => {
+		const group = $(e.target).attr("group");
+		$("#edit-todo-error").hide();
+		$("#edit-group-name").val(group).attr("disabled", "disabled");
+		$("#edit-action-name").val("").removeAttr("disabled");
+		//$("#edit-progression").val("");
+		todoMDE.value("");
+		$("#edit-who").val("");
+		$('#edit-action-done').bootstrapToggle('off');
+		$("#edit-todo").modal("show");
+	  });
+
+	  $("#todo").on("click", "button.delete", (e) => {
+		const group = $(e.target).attr("group");
+		const action = $(e.target).attr("action");
+		bootbox.confirm("Voulez-vous vraiment supprimer cette action ?", result =>{
+		  if (result) {
+			ref.child("kermesse").child("todo").child(group).child(action).remove();
+		  }
+		});
+	  });
+	  
+	  $("#todo").on("click", "button.edit", (e) => {
+		const group = $(e.target).attr("group");
+		const action = $(e.target).attr("action");
+		
+		$("#edit-todo-error").hide();
+		$("#edit-group-name").val(group).attr("disabled", "disabled");
+		$("#edit-action-name").attr("action", action).val(action).removeAttr("disabled");
+		//$("#edit-progression").val(todos[group][action].progression);
+		todoMDE.value(todos[group][action].progression);
+		$("#edit-who").val(todos[group][action].who);
+		console.log("done", todos[group][action].done);
+		$('#edit-action-done').bootstrapToggle(todos[group][action].done ? 'on' : 'off');
+		$("#edit-todo").modal("show");
+	  });
+
+	  ref.child("kermesse").child("news").on("child_removed", (snapshot) => {
+		const id = snapshot.name();
+		$("#"+id).remove();
+		delete news[id];
+	  });
+
+	  ref.child("kermesse").child("news").on("child_changed", (snapshot) => {
+		const infos = snapshot.val();
+		const id = snapshot.name();
+		$("#"+id+" h3>span").text(infos.title);
+		$("#"+id+" p").html(mdConverter.makeHtml(infos.content));
+	  });
+
+	  ref.child("kermesse").child("news").on("child_added", (snapshot) => {
+		const infos = snapshot.val();
+		const id = snapshot.name();
+		news[id]=infos;
+		const div = $("<div>").attr("id", id);
+		div.append($("<h3>")
+		  .append($("<span>").text(infos.title))
+		  .append("&nbsp;")
+		  .append($("<button>").attr("news", id).addClass("edit btn btn-default btn-xs btn-warning").append($("<span>").addClass("glyphicon glyphicon-edit")))
+		  .append("&nbsp;")
+		  .append($("<button>").attr("news", id).addClass("delete btn btn-default btn-xs btn-danger").append($("<span>").addClass("glyphicon glyphicon-remove")))
+		);
+		div.append($("<p>").html(mdConverter.makeHtml(infos.content)));
+		$("#news").append(div);
+	  });
+	  
+	  $("#add-news").on("click", (e) => {
+		$("#edit-news-title").attr("news", "").val("");
+		newsMDE.value("");
+		$("#edit-news").modal("show");
+	  });
+
+	  $("#news").on("click", "button.delete", (e) => {
+		const id = $(e.target).attr("news");
+		bootbox.confirm("Voulez-vous vraiment supprimer cette actualité ?", result =>{
+		  if (result) {
+			ref.child("kermesse").child("news").child(id).remove();
+		  }
+		});
+	  });
+	  
+	  $("#news").on("click", "button.edit", (e) => {
+		const id = $(e.target).attr("news");
+		if (news[id]) {
+		  $("#edit-news-title").attr("news", id).val(news[id].title);
+		  newsMDE.value(news[id].content);
+		  $("#edit-news").modal("show");
+		}
+	  });
+	  
+	  $("#edit-news-save").on("click", (e) => {
+		const title = $("#edit-news-title").val();
+		const content = newsMDE.value();
+		const oldId = $("#edit-news-title").attr("news");
+		if (! title) {
+		  $("#edit-news-error").text("Merci de donner un titre").show();
+		} else {
+		  if (oldId && news[oldId]) {
+			ref.child("kermesse").child("news").child(oldId).update({
+			  title: title,
+			  content: content,
+			  editedAt : Webcom.ServerValue.TIMESTAMP
+			}, (error) => {
+			  if (error) {
+				$("#edit-news-error").text(error).show();
+			  } else {
+				$("#edit-news").modal("hide");
+			  }
+			});
+		  } else {
+			ref.child("kermesse").child("news").push({
+			  title: title,
+			  content: content,
+			  createdAt : Webcom.ServerValue.TIMESTAMP
+			}, (error) => {
+			  if (error) {
+				$("#edit-news-error").text(error).show();
+			  } else {
+				$("#edit-news").modal("hide");
+			  }
+			});
+		  }
+		}
+	  });
+	  
+	});
+	</script>
+  </head>
+  <body>
+	<div class="modal fade" id="login-modal">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Log in</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<form id="login">
+			  <p>Use your CUID/Password</p>
+			  <div class="form-group">
+				<label for="user-id">CUID</label>
+				<input type="text" class="form-control" name="username" id="user-id" placeholder="CUID"/>
+			  </div>
+			  <div class="form-group">
+				<label for="password">Password</label>
+				<input type="password" class="form-control" password="password" id="password" placeholder="Password"/>
+			  </div>
+			  <div class="alert alert-danger" style="display:none" id="login-error"></div>
+			</form>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			<button type="button" class="btn btn-primary" id="login-button">Log in</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="modal fade" id="edit-stall">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Modifier stand</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div class="form-group">
+			  <label for="edit-stall-name">Rubrique</label>
+			  <input type="text" class="form-control" id="edit-stall-name" disabled="disabled" placeholder=""/>
+			</div>
+			<div class="form-group">
+			  <label for="edit-stall-hour">Horaire</label>
+			  <div class="row" id="edit-stall-hour">
+				<div class="col-lg-6">
+				  <div class="input-group">
+					<span class="input-group-addon">
+					  Début
+					</span>
+					<input type="number" class="form-control" id="edit-stall-start" placeholder=""/>
+					<span class="input-group-addon">
+					  h
+					</span>
+				  </div><!-- /input-group -->
+				</div><!-- /.col-lg-6 -->
+				<div class="col-lg-6">
+				  <div class="input-group">
+					<span class="input-group-addon">
+					  Fin
+				  </span>
+				  <input type="number" class="form-control" id="edit-stall-end" placeholder=""/>
+				  <span class="input-group-addon">
+					h
+				  </span>
+				  </div><!-- /input-group -->
+				</div><!-- /.col-lg-6 -->
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label for="edit-stall-where">Lieu</label>
+			  <input type="text" class="form-control" id="edit-stall-where" placeholder=""/>
+			</div>
+			<div class="form-group">
+			  <label for="edit-stall-min">Nombre de personnes requises</label>
+			  <input type="number" class="form-control" id="edit-stall-min" placeholder=""/>
+			</div>
+			<div class="form-group">
+			  <label for="edit-stall-description">Remarques</label>
+			  <textarea id="edit-stall-description" class="form-control" style="min-width: 100%" rows="10"></textarea>
+			</div>
+			<div class="alert alert-danger" style="display:none" id="edit-stall-error"></div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+			<button type="button" class="btn btn-primary" id="edit-stall-save">Valider</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="modal fade" id="edit-todo">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Modifier l'action</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div class="form-group">
+			  <label for="edit-group-name">Rubrique</label>
+			  <input type="text" class="form-control" id="edit-group-name" disabled="disabled" placeholder=""/>
+			</div>
+			<div class="form-group">
+			  <label for="edit-action-name">Action</label>
+			  <input type="text" class="form-control" id="edit-action-name" disabled="disabled" placeholder=""/>
+			</div>
+			<div class="form-group">
+			  <label for="edit-action-name">Gérée par</label>
+			  <input type="text" class="form-control" id="edit-who" placeholder=""/>
+			</div>
+			<div class="form-group">
+			  <label>Action terminée <input id="edit-action-done" type="checkbox"></label>
+			</div>
+			<div class="form-group">
+			  <label for="edit-progression">Remarques</label>
+			  <textarea id="edit-progression" class="form-control" style="min-width: 100%" rows="10"></textarea>
+			</div>
+			<div class="alert alert-danger" style="display:none" id="edit-todo-error"></div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+			<button type="button" class="btn btn-primary" id="edit-todo-save">Valider</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="modal fade" id="edit-news">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Editer l'actualité</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div class="form-group">
+			  <label for="edit-news-title">Titre</label>
+			  <input type="text" class="form-control" id="edit-news-title" disabled="disabled" placeholder=""/>
+			</div>
+			<div class="form-group">
+			  <label for="edit-news-content">Contenu</label>
+			  <textarea id="edit-news-content" class="form-control" style="min-width: 100%" rows="10"></textarea>
+			</div>
+			<div class="alert alert-danger" style="display:none" id="edit-news-error"></div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+			<button type="button" class="btn btn-primary" id="edit-news-save">Valider</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="container-fluid" role="main">
+	  <h1>Préparation de la kermesse des écoles publiques de Bégard</h1>
+
+	  <table>
+		<tr>
+		  <td>
+			Bienvenue sur le site de gestion de la kermesse des écoles publiques de Bégard. Vous pourrez ici vous inscrire afin de nous aider à faire en sorte que la kermesse soit un moment agréable pour tout le monde.
+		  </td>
+		  <td>
+			<a href="../img/affiche.pdf"><img src="../img/affiche.png" height="300px"/></a>
+		  </td>
+		</tr>
+	  </table>
+
+	  <h2>Actualités <button id="add-news" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-plus"></span></button></h2>
+
+	  <div id="news"></div>
+
+	  <h2>Planning</h2>
+
+	  <div id="planning">
+		
+		<h3>Pour le samedi 16 juin <button day="samedi" class="add-stall btn btn-default btn-primary"><span class="glyphicon glyphicon-plus"></span></button></h3>
+		
+		<table class="table table-bordered" width="100%" cellspacing="0">
+		  <thead>
+			<tr>
+			  <th>Rubrique</th>
+			  <th>Horaire</th>
+              <th>Où</th>
+              <th>Remarques</th>
+			  <th>Nb requis</th>
+			  <th>Inscrits</th>
+              <th width="80px"></th>
+			</tr>
+          </thead>
+		  <tbody id="planning-samedi">
+		  </tbody>
+		</table>
+		
+		<h3>Pour le dimanche 17 juin <button day="dimanche" class="add-stall btn btn-default btn-primary"><span class="glyphicon glyphicon-plus"></span></button></h3>
+		
+		<table class="table table-bordered" width="100%" cellspacing="0">
+		  <thead>
+			<tr>
+			  <th>Rubrique</th>
+			  <th>Horaire</th>
+              <th>Où</th>
+              <th>Remarques</th>
+			  <th>Nb requis</th>
+			  <th>Inscrits</th>
+              <th width="80px"></th>
+			</tr>
+          </thead>
+		  <tbody id="planning-dimanche">
+		  </tbody>
+		</table>
+	  </div>
+
+	  <h2>Trucs à faire <button id="add-todo" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-plus"></span></button></h2>
+
+	  <p>Il y a actuellement <span id="todo-done"></span> actions terminées sur <span id="todo-todo"></span></p>
+	  
+	  <table class="table table-bordered" width="100%" cellspacing="0">
+		<thead>
+		  <tr>
+            <th>Rubrique</th>
+			<th>Action</th>
+            <th>Gérée par</th>
+            <th>Remarques</th>
+            <th width="80px"></th>
+		  </tr>
+        </thead>
+		<tbody id="todo">
+		</tbody>
+	  </table>
+	  
+	</div>
+  </body>
+</html>

@@ -1,0 +1,550 @@
+{
+	"kermesse" : {
+		"todo" : {
+			"Crêpes" : {
+				"Trouver des oeufs" : {
+					"who" : "",
+					"done" : true
+				},
+				"Trouver du lait" : {
+					"who" : "",
+					"done" : true
+				}
+			},
+			"Concours de palets" : {
+				"Vérifier le nombre de palets" : {
+					"who" : "Matthieu",
+					"progression" : "",
+					"done" : false
+				}
+			},				
+			"Sono" : {
+				"Trouver un animateur et le matériel" : {
+					"who" : "Matthieu",
+					"progression" : "Demande faite à Alain le 15 mai",
+					"done" : false
+				}
+			},
+			"Structure gonflable" : {
+				"Réserver la structure" : {
+					"who" : "Matthieu",
+					"progression" : "Demande faite à Alain le 15 mai",
+					"done" : false
+				}
+			},			
+			"Poney" : {
+				"Contacter Maria" : {
+					"who" : "Matthieu",
+					"progression" : "E-mail envoyé le 15 mai",
+					"done" : false
+				}
+			},
+			"Affiches" : {
+				"Faire l'affiche de la kermesse" : {
+					"who" : "Matthieu",
+					"done" : true
+				},
+				"Faire les affiches des stands" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Faire l'affiche de remerciements" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Préparer le mot des commerçants" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Préparer la fiche d'inscription au repas des bénévoles" : {
+					"who" : "Matthieu",
+					"done" : false
+				}
+			},
+			"Maquillage" : {
+				"Vérifier les stocks" : {
+					"who" : "Karine",
+					"done" : false
+				}
+			},
+			"Roue de la chance" : {
+				"Faire les demandes de lots" : {
+					"who" : "Karine",
+					"done" : true
+				},
+				"Trier et mettre sous enveloppe les bons" : {
+					"who" : null,
+					"done" : false
+				}
+			},
+			"Casse oeufs" : {
+				"Commander les lots (bouteilles)" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Trouver le billot" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Avec des oeufs déclassés" : {
+					"who" : "Karine ?",
+					"done" : false
+				}
+			},
+			"Tombola" : {
+				"Répartir les lots" : {
+					"who" : "Matthieu & Maud",
+					"done" : false
+				}
+			},
+			"Stands concours": {
+				"Préparer les grilles de scores" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Répartir les lots" : {
+					"who" : "Matthieu & Maud",
+					"done" : false
+				}
+			},
+			"Fleurs" : {
+				"Commander les fleurs" : {
+					"who" : "Maud",
+					"done" : false
+				},
+				"Préparer les tickets" : {
+					"who" : null,
+					"done" : false
+				}
+			},
+			"Loterie" : {
+				"Commander les lots" : {
+					"who" : "Marina",
+					"done" : true
+				},
+				"Préparer les tickets" : {
+					"who" : "Marina",
+					"done" : false
+				}
+			},
+			"Défilé" : {
+				"Remplir l'arrêté de circulation" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Prévoir des bouteilles d'eau en cas de chaleur" : {
+					"who" : null,
+					"progression" : "E-mail envoyé à Gaëlle le 16 mai",
+					"done" : false
+				},
+				"Trouver les tracteurs et conducteurs" : {
+					"who" : "Directeurs",
+					"progression" : "E-mail envoyé à Gaëlle le 16 mai",
+					"done" : false
+				}
+			},
+			"Repas midi et soir" : {
+				"Commander les salades" : {
+					"who" : "Maud",
+					"done" : false
+				},
+				"Faire les courses" : {
+					"who" : "Maud",
+					"description" : "Pain, bières, vin, gateaux apéro ...",
+					"done" : false
+				}
+			},
+			"Pêche à la ligne et aux canards" : {
+				"Commander les lots" : {
+					"who" : "Marina",
+					"done" : true
+				}
+			},
+			"Communication" : {
+				"Mettre en place les 2 banderolles" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Déposer des affiches dans Bégard" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Déposer des flyers dans les boulangeries de Bégard" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Envoyer affiche à l'office du tourisme": {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Inviter les correspondants de presse": {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Annonce Radio Bonheur?": {
+					"who": null,
+					"done": false
+				}
+			},
+			"Installation" : {
+				"Récupérer des poubelles (normales et de tri)" : {
+					"who" : null,
+					"progression" : "",
+					"done" : false
+				},
+				"Réserver le percolateur de la salle Jean Moulin" : {
+					"who" : "Matthieu",
+					"progression" : "Demande faite le 14 mai",
+					"done" : true
+				},
+				"Réserver les friteuses de la salle Jean Moulin" : {
+					"who" : "Matthieu",
+					"progression" : "Demande faite le 14 mai",
+					"done" : true
+				},
+				"Réserver la salle Jean Moulin pour le dimanche (repas des bénévoles)" : {
+					"who" : "Matthieu",
+					"progression" : "Demande faite le 14 mai",
+					"done" : true
+				},
+				"Faire déposer le parquet" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Faire déposer la remorque sono" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Faire déposer les caissons de bancs et tables" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Faire déposer les barrières de sécurité" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Faire déposer les étagères des stands fleurs et loterie" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Faire déposer les vieilles tables pour fabriquer les crêpes" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Faire poser les allées de boules" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Demander le branchement électrique pour les billigs et les friteuses" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Faire récupérer la structure de tir au but au CSB" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Faire récupérer les fleurs et les déposer à l'école" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Faire déposer les 2 petits barnums de la mairie (stand Grillade)" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Réserver des barnums" : {
+					"who" : "Matthieu",
+					"progression" : "4 barnums de 5m*8m réservés pour le moment. Voir pour réserver le barnum (6m*12m) du comité des fêtes de Trézélan au cas où.",
+					"done" : true
+				},
+				"Faire installer les friteuses au restaurant scolaire" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Commander les tickets de payement de la kermsse" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Mettre en paquet de 10 les tickets de payement" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				}
+			},
+			"Barbe à papa" : {
+				"Acheter de la flocine" : {
+					"who" : null,
+					"done" : false
+				},
+				"Acheter des batons" : {
+					"who" : null,
+					"done" : false
+				},
+				"Acheter du sucre glace" : {
+					"who" : null,
+					"done" : false
+				},
+				"Faire une soudure étanche" : {
+					"who" : null,
+					"done" : false
+				}
+			},
+			"Bonbons" : {
+				"Acheter les bonbons et les sacs" : {
+					"who" : null,
+					"done" : false
+				},
+				"Mettre les bonbons dans les sacs" : {
+					"who" : null,
+					"done" : false
+				}
+			},
+			"Grillades" : {
+				"Acheter ketchup, moutarde, mayonnaise, sel, etc" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Acheter les oignons et le vin" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Commander le pain dans les boulangeries" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Commander les saucisses et merguez chez Le Mignot" : {
+					"who" : "Matthieu",
+					"done" : false
+				}
+			},
+			"Frites" : {
+				"Acheter les barquettes de frites" : {
+					"who" : "Matthieu",
+					"done" : false
+				},
+				"Commander les frites" : {
+					"who" : "Matthieu",
+					"progression" : "Demande envoyée à Yannick",
+					"done" : false
+				}
+			},
+			"Buvette" : {
+				"Commander des gobelets recyclables (au besoin)" : {
+					"who" : "Matthieu",
+					"progression" : "Demande de devis envoyé",
+					"done" : false
+				},
+				"Demander des bacs remplis de glace à Intermarché" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Faire la demande de débit de boisson" : {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				},
+				"Commander les boissons": {
+					"who" : "Matthieu",
+					"progression" : null,
+					"done" : false
+				}
+			}
+		},
+		"planning" : {
+			"Avant" : {
+				"Définir la date de la réunion des bénévoles" : {
+					"where" : "Ecole élémentaire Baloré"
+				},
+				"Inviter les journalistes pour point technique" : {
+					"where" : "Ecole élémentaire Baloré"
+				}
+			},
+			"Samedi 16 juin" : {
+				"Installation" : {
+					"description" : "Monter les barnums\nPréparer le restaurant scolaire\nCommencer à installer les stands",
+					"min" : 12,
+					"start" : 14,
+					"where" : "Cour élémentaire Baloré",
+					"end" : 17
+				},
+				"Préparation crêpes" : {
+					"description" : "Préparer la pâte à crêpe",
+					"min" : 4,
+					"start" : 9,
+					"end" : 12,
+					"where" : "Restaurant scolaire"
+				},
+				"Confection des crêpes" : {
+					"description" : "Fabriquer les crêpes. Merci de venir avec votre billig",
+					"min" : 15,
+					"start" : 14,
+					"where" : "Restaurant scolaire",
+					"end": 18
+				}
+			},
+			"Dimanche 17 juin" : {
+				"Installation" : {
+					"description" : "Mettre en place les côtés des barnums\nInstaller les tables et bancs\nMettre en place des barrières de sécurité\nFaire les branchements électriques\nInstallation roue de la chance\nMettre en place le stand fleurs",
+					"min" : 14,
+					"start" : 9,
+					"where" : "Cour élémentaire Baloré",
+					"end" : 12
+				},
+				"Rangement" : {
+					"description" : "Démonter les barnums\nRanger les barrières, les tables et les bancs\nOn commence à ranger vers 18h, selon le nombre de bras disponibles le rangement peut être terminé à 19h",
+					"min" : 14,
+					"start" : 18,
+					"where" : "Cour élémentaire Baloré",
+					"end" : 20
+				},
+				"Nettoyage restaurant et toilettes" : {
+					"description" : "Nettoyer les toilettes\nRanger et nettoyer le restaurant scolaire. Selon les années, ça peut commencer à 18h30 mais cela peut aussi être 19h30",
+					"min" : 10,
+					"start" : 18,
+					"where" : "Cour élémentaire Baloré",
+					"end" : 20
+				},
+				"Buvette" : {
+					"description" : "Tenir la buvette. Nous nous réservons le choix des bénévoles présents sur ce stand important",
+					"min" : 8,
+					"start" : 14,
+					"where" : "Cour élémentaire Baloré",
+					"end" : 19
+				},
+				"Casse-oeufs" : {
+					"description" : "",
+					"min" : 2,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Fleurs" : {
+					"description" : "",
+					"min" : 3,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Maquillage" : {
+					"description" : "",
+					"min" : 10,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Poney" : {
+					"description" : "Maria vient normalement avec ses bénévoles",
+					"min" : 4,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Structure gonflable" : {
+					"description" : "",
+					"min" : 2,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Pêche aux canards" : {
+					"description" : "",
+					"min" : 6,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Pêche à la ligne" : {
+					"description" : "",
+					"min" : 6,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Loterie" : {
+					"description" : "",
+					"min" : 6,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Concours de palets" : {
+					"description" : "",
+					"min" : 2,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Casse-boites" : {
+					"description" : "",
+					"min" : 2,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Barbe-à-papa" : {
+					"description" : "",
+					"min" : 2,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Roue de la change" : {
+					"description" : "",
+					"min" : 2,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Tombola" : {
+					"description" : "",
+					"min" : 2,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Tirs" : {
+					"description" : "",
+					"min" : 4,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Tir au but" : {
+					"description" : "",
+					"min" : 2,
+					"where" : "Cour élémentaire Baloré",
+					"start": 14,
+					"end" : 18
+				},
+				"Pré-cuisson des frites" : {
+					"description" : "Pré-cuire les frites",
+					"min" : 1,
+					"where" : "Cour élémentaire Baloré",
+					"start": 9,
+					"end" : 12
+				},
+				"Grillades" : {
+					"description" : "",
+					"min" : 6,
+					"start" : 14,
+					"where" : "Cour élémentaire Baloré",
+					"end" : 18
+				}
+			}
+		}
+	}
+}
