@@ -5,88 +5,205 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Amicale Laïque de Bégard</title>
-	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.0/normalize.css">
-	<script> 
-	</script>
-	<style>
-	window, body {
-	  padding: 0px;
-	  margin: 0px;
-	}
-	
-	#title {
-	  margin: 0px;
-	  width: 100%;
-	  text-align: center;
-	  background-image: url("img/banner.jpg");
-	  background-color: black;
-	  background-size: cover;
-	}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+	<link href="//gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+	<link href="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" rel="stylesheet">
+	<link href="./css/alb.css" rel="stylesheet">
 
-	#title img{
-	  top:0;
-	  z-index: 1;
-	}
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+	<script src="//io.datasync.orange.com/js/latest/webcom.js"></script>
+	<script src="//gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+	<script src="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/showdown/1.8.5/showdown.min.js"></script>
 
-	#title h1 img {
-	  height: 2em;
-	  vertical-align: middle;
-	}
-
-	article {
-	  width: 100%;
-	  color: #555;
-	  text-align: center;
-	  margin-left: auto;
-	  margin-right: auto;
-	  margin-top: 2em;
-	  padding-bottom: 2em;
-	  border-bottom: 1px solid #555;
-	  max-width: 62.5rem;
-	  margin-bottom: 1em;
-	}
-
-	article a {
-	  color: #2a6d9b;
-	}
-	
-	article img {
-	  max-height: 500px;
-	}
-
-	article header {
-	  font-weight: bold;
-	  padding-bottom: 1em;
-	  text-transform: uppercase;
-	  font-size: 1.5em;
-	}
-
-	article p {
-	  margin-top: 0px;
-	  
-	}
-	#title h1 {
-	  margin: 0px;
-	  color: white;
-	  padding-top: 0.5em;
-	  padding-bottom: 4em;
-	  text-align: center;
-	  width: 100%;
-	  font-size: 5em;
-	}
-	</style>
+	<script src="./js/global.js"></script>
+	<script src="./js/news.js"></script>
   </head>
   <body>
+	<div class="modal fade" id="edit-news">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h4 class="modal-title">Editer l'actualité</h4>
+		  </div>
+		  <div class="modal-body">
+			<div class="form-group">
+			  <label for="edit-news-title">Titre</label>
+			  <input type="text" class="form-control" id="edit-news-title" disabled="disabled" placeholder=""/>
+			</div>
+			<div class="form-group">
+			  <label for="edit-news-content">Contenu</label>
+			  <textarea id="edit-news-content" class="form-control" style="min-width: 100%" rows="10"></textarea>
+			</div>
+			<div class="alert alert-danger" style="display:none" id="edit-news-error"></div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+			<button type="button" class="btn btn-primary" id="edit-news-save">Valider</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="modal fade" id="profile-modal">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h4 class="modal-title">Renseigner votre profil</h4>
+		  </div>
+		  <div class="modal-body">
+			<form id="profile">
+			  <p>Merci de renseigner votre profil afin que l'on puisse vous contacter facilement en cas de besoin.</p>
+			  <div class="form-group">
+				<label for="firstname">Prénom</label>
+				<input type="text" class="form-control" name="firstname" id="firstname" placeholder="Votre prénom"/>
+			  </div>
+			  <div class="form-group">
+				<label for="lastname">Nom</label>
+				<input type="text" class="form-control" name="lastname" id="lastname" placeholder="Votre nom"/>
+			  </div>
+			  <div class="form-group">
+				<label for="pseudo">Pseudo (seul champ visible par les autres utilisateurs du site)</label>
+				<input type="text" class="form-control" name="pseudo" id="pseudo" placeholder="Votre pseudo, votre prénom c'est très bien par exemple"/>
+			  </div>
+			  
+			  <div class="form-group">
+				<label for="mobile">Téléphone portable</label>
+				<input type="tel" class="form-control" id="mobile" placeholder="Votre numéro de téléphone portable"/>
+			  </div>
+			  <div class="alert alert-danger" style="display:none" id="profile-error"></div>
+			  <div class="alert alert-success" style="display:none" id="profile-info"></div>
+			</form>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+			<button type="button" class="btn btn-primary" id="profile-button">Enregistrer</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="modal fade" id="register-modal">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h4 class="modal-title">S'enregistrer</h4>
+		  </div>
+		  <div class="modal-body">
+			<form id="login">
+			  <p>Veuillez renseigner votre e-mail et votre mot de passe. Pour les membres de l'association, merci d'utiliser vos adresses <b>@al-begard.org</b>, comme cela vous aurez tout de suite les droits d'éditions sur le site.</p>
+			  <div class="form-group">
+				<label for="register-email">E-mail</label>
+				<input type="text" class="form-control" name="email" id="register-email" placeholder="Votre e-mail"/>
+			  </div>
+			  <div class="form-group">
+				<label for="password1">Mot de passe</label>
+				<input type="password" class="form-control" password="password" id="password1" placeholder="Votre mot de passe"/>
+			  </div>
+			  <div class="form-group">
+				<label for="password2">Veuillez saiser de nouveau votre mot de passe</label>
+				<input type="password" class="form-control" password="password" id="password2" placeholder="Votre mot de passe"/>
+			  </div>
+			  <div class="alert alert-danger" style="display:none" id="register-error"></div>
+			  <div class="alert alert-success" style="display:none" id="register-info"></div>
+			</form>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+			<button type="button" class="btn btn-primary" id="register-button">S'enregistrer</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="modal fade" id="login-modal">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h4 class="modal-title">Se connecter</h4>
+		  </div>
+		  <div class="modal-body">
+			<form id="login">
+			  <p>Veuillez renseigner votre e-mail et votre mot de passe.</p>
+			  <div class="form-group">
+				<label for="email">E-mail</label>
+				<input type="text" class="form-control" name="email" id="email" placeholder="Votre e-mail"/>
+			  </div>
+			  <div class="form-group">
+				<label for="password">Mot de passe</label>
+				<input type="password" class="form-control" password="password" id="password" placeholder="Votre mot de passe"/>
+			  </div>
+			  <div class="alert alert-danger" style="display:none" id="login-error"></div>
+			  <p>Vous n'avez pas encore de compte, <a href="#" class="register">cliquez ici pour vous en créer un</a>.</p>
+			  <p>Vous avez perdu votre mot de passe, <a href="#" class="register">cliquez ici le réinitialiser</a>.</p>
+			  <p>Vous avez un autre problème, <a href="mailto:support@al-begard.org?subject=[ALB] Problème d'authentification sur le site">envoyez un e-mail à support@al-begard.org</a>.</p>
+			</form>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+			<button type="button" class="btn btn-primary" id="login-button">Se connecter</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+		  </button>
+		  <a class="navbar-brand" href="http://al-begard.org"><img src="./img/logo.png"/></a>
+		  <p class="navbar-text">Amicale Laïque de Bégard</p>
+		</div>
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		  <ul class="nav navbar-nav control">
+		  </ul>
+		  <p class="navbar-text shorturl"><a href="./kermesse">Kermesse</a></p>
+
+		  <ul class="nav navbar-nav control">
+		  </ul>
+		  <ul class="nav navbar-nav navbar-right">
+			<li><p class="navbar-text connected" style="display: none">Bienvenue <span class="pseudo"></span></p></li>
+			<!-- <p id="user" class="navbar-text"></p></li> -->
+			<li><button type="button" class="btn btn-default navbar-btn profile connected" title="Modifier mon profil" style="display:none"><span class="glyphicon glyphicon-user"></span></button></li>
+			<li><button type="button" class="btn btn-default navbar-btn login not-connected" title="Se connecter" style="display:none"><span class="glyphicon glyphicon-log-in"></span></button></li>
+			<li><button type="button" class="btn btn-default navbar-btn logout connected" title="Se déconnecter" style="display:none"><span class="glyphicon glyphicon-log-out"></span></button></li>
+			<li><button type="button" class="btn btn-default navbar-btn register not-connected" title="Se créer un compte" style="display:none"><span class="glyphicon glyphicon-plus-sign"></span></button></li>
+		  </ul>
+		</div>
+      </div>
+    </nav>
 	<div id="title">
 	  <h1>Amicale Laïque de Bégard <img src="img/alb.png"/></h1>
 	</div>
 	<div id="content">
+	  <button id="add-news" class="connected admin btn btn-default btn-primary"><span class="glyphicon glyphicon-plus"></span> Ajouter une actualité</button>
+
+	  <div id="news"></div>
+	  
 	  <article>
 		<header>Préparation de la kermesse du dimanche 17 juin</header>
 
-		<p>La page de gestion de la kermesse se trouve sur <a href="http://al-begard.org/kermesse">http://al-begard.org/kermesse</a>.</p>
+		<p>La page de gestion de la kermesse se trouve sur <a href="./kermesse">http://al-begard.org/kermesse</a>.</p>
 
 		<p>N'hésitez pas à partager l'affiche : </p>
 		<a href="img/affiche.pdf"><img src="img//affiche.png" /></a>
@@ -102,5 +219,8 @@
 		<a href="img/invitation-70ans.pdf"><img src="img/invitation-70ans.jpg"/></a>
 	  </article>
 	</div>
+	<footer class="footer">
+	  <p>Vous avez un problème ou une question à propos du site, <a href="mailto:support@al-begard.org?subject=[ALB] Problème sur le site Web">envoyez un e-mail à support@al-begard.org</a>.</p>
+	</footer>
   </body>
 </html>
