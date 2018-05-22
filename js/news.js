@@ -71,7 +71,12 @@ $(function() {
 				ref.child("kermesse").child("news").child(oldId).update({
 					title: title,
 					content: content,
-					editedAt : Webcom.ServerValue.TIMESTAMP
+					editedAt : Webcom.ServerValue.TIMESTAMP,
+					editedBy: {
+						uid: currentUser.uid,
+						email: currentUser.providerUid,
+						pseudo: currentProfile.pseudo
+					}
 				}, (error) => {
 					if (error) {
 						$("#edit-news-error").text(error).show();
@@ -83,7 +88,12 @@ $(function() {
 				ref.child("kermesse").child("news").push({
 					title: title,
 					content: content,
-					createdAt : Webcom.ServerValue.TIMESTAMP
+					createdAt : Webcom.ServerValue.TIMESTAMP,
+					createdBy: {
+						uid: currentUser.uid,
+						email: currentUser.providerUid,
+						pseudo: currentProfile.pseudo
+					}
 				}, (error) => {
 					if (error) {
 						$("#edit-news-error").text(error).show();

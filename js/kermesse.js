@@ -279,7 +279,7 @@ $(function() {
 		} else {
 			//console.log("save", group, action, progression, done);
 			
-			if (todos[group][originalAction] && originalAction != action) {
+			if (originalAction && todos[group][originalAction] && originalAction != action) {
 				//console.log("rename", originalAction, action);
 				ref.child("kermesse").child("todo").child(group).child(originalAction).remove();
 			}
