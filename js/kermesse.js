@@ -47,7 +47,7 @@ $(function() {
 					tr.append($("<td>").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
 					tr.append($("<td>").text(infos.where));
 					tr.append($("<td>").text(infos.description).css("white-space", "pre"));
-					tr.append($("<td>").text(infos.min));
+					tr.append($("<td>").text(enroled+"/"+infos.min));
 					let enroledText=Object.values(enrol).join('<br>');
 					if (customEnrol.length>0) {
 						enroledText+="<br>+"+customEnrol.length;
@@ -263,7 +263,6 @@ $(function() {
 		$("#todo-todo").text(total_actions);
 	});
 	
-	
 	$("#edit-todo-save").on("click", (e) => {
 		const group = $("#edit-group-name").val();
 		const action = $("#edit-action-name").val();
@@ -302,7 +301,6 @@ $(function() {
 		}
 	});
 	
-	
 	$("#add-todo").on("click", (e) => {
 		$("#edit-group-name").val("").removeAttr("disabled");
 		$("#edit-action-name").val("").removeAttr("disabled");
@@ -315,7 +313,7 @@ $(function() {
 	$("#todo").on("click", "button.add", (e) => {
 		const group = $(e.target).attr("group");
 		$("#edit-todo-error").hide();
-		$("#edit-group-name").val(group).attr("disabled", "disabled");
+		$("#edit-group-name").val(group).removeAttr("disabled");
 		$("#edit-action-name").val("").removeAttr("disabled");
 		$("#edit-progression").val("");
 		//todoMDE.value("");
