@@ -98,3 +98,7 @@ article p {
 .footer p{
 	margin: 0;
 }
+
+#edit-stall span.uid {
+	cursor: pointer;
+}

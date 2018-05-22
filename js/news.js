@@ -32,12 +32,12 @@ $(function() {
 				   .append($("<button>").attr("news", id).addClass("delete connected admin btn btn-default btn-xs btn-danger").append($("<span>").addClass("glyphicon glyphicon-remove")))
 				  );
 		div.append($("<p>").html(mdConverter.makeHtml(infos.content)));
-		$("#news").append(div);
+		$("#news").prepend(div);
 		checkConnected();
 	});
 	
 	$("#add-news").on("click", (e) => {
-		$("#edit-news-title").attr("news", "").val("");
+		$("#edit-news-title").removeAttr("disabled").attr("news", "").val("");
 		newsMDE.value("");
 		$("#edit-news").modal("show");
 	});

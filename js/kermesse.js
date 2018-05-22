@@ -1,4 +1,3 @@
-
 $(function() {
 	let todos;
 	let planning;
@@ -18,28 +17,42 @@ $(function() {
 		planning = snapshot.val();
 		for (let day in planning) {
 			if ($("#planning-"+day).length) {
-				$("#planning-"+day).empty();
 				for (let stall in planning[day]) {
+					planning[day][stall].stall=stall;
+				}
+				const byHours = Object.values(planning[day]).sort((a,b) => {return parseInt(a.start) - parseInt(b.start)});
+				$("#planning-"+day).empty();
+				for (let i =0; i<byHours.length;i++) {
+					const stall=byHours[i].stall;
+				//for (let stall in planning[day]) {
 					const infos = planning[day][stall];
 					const tr = $("<tr>");
 					const enrol = infos.enrol || {};
+					let customEnrol = (infos.customEnrol || "").split(/\n/);
+					customEnrol=customEnrol.filter(c=>c.match(/\w/));
+					const enroled = Object.keys(enrol).length+customEnrol.length;
 					//console.log(day, stall, enrol);
 					let c;
-					if (Object.keys(enrol).length < infos.min) {
+					if (enroled < infos.min) {
 						c="danger";
-					} else {
+						if (enroled >= (infos.min/2)) {
+							c="warning";
+						}
+					}else{
 						c="success";
 					}
-					if (Object.keys(enrol).length >= (infos.min/2)) {
-						c="warning";
-					}
+					
 					tr.addClass(c);
 					tr.append($("<td>").text(stall));
 					tr.append($("<td>").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
 					tr.append($("<td>").text(infos.where));
 					tr.append($("<td>").text(infos.description).css("white-space", "pre"));
 					tr.append($("<td>").text(infos.min));
-					tr.append($("<td>").html(Object.values(enrol).join('<br>')));
+					let enroledText=Object.values(enrol).join('<br>');
+					if (customEnrol.length>0) {
+						enroledText+="<br>+"+customEnrol.length;
+					}
+					tr.append($("<td>").html(enroledText));
 					const td=$("<td>")
 						  .append($("<button>").attr("title", "Modifier").addClass("edit connected admin btn btn-default btn-xs btn-warning").attr("day", day).attr("stall",stall).append($("<span>").addClass("glyphicon glyphicon-edit"))).addClass(c)
 						  .append("&nbsp;")
@@ -97,7 +110,7 @@ $(function() {
 			}
 		}
 	});
-	
+
 	$("#planning").on("click", "button.edit", (e) => {
 		const day = $(e.target).attr("day");
 		const stall = $(e.target).attr("stall");
@@ -107,12 +120,42 @@ $(function() {
 		$("#edit-stall-name").attr("day", day).attr("stall", stall).val(stall).removeAttr("disabled");//.attr("disabled", "disabled");
 		$("#edit-stall-where").val(infos.where);
 		$("#edit-stall-min").val(infos.min);
+		$("#edit-stall-force-enroled").val(infos.customEnrol || "");
 		$("#edit-stall-start").val(infos.start);
 		$("#edit-stall-end").val(infos.end);
+		let enroledText="";
+		const enrol = infos.enrol || {};
+		$("#edit-stall-already-enrols").empty();
+		for (uid in enrol) {
+			let enroled = $("<span>").attr("id", "enrol-"+uid).addClass("label label-default")
+				.append($("<span>").text(enrol[uid]))
+				.append("&nbsp;")
+				.append($("<span>").attr("day", day).attr("stall", stall).attr("pseudo", enrol[uid]).attr("uid", uid).addClass("uid glyphicon glyphicon-remove"));
+			$("#edit-stall-already-enrols").append(enroled);
+		}
+
 		$("#edit-stall-description").val(infos.description);
 		//stallMDE.value(infos.description);
 		$("#edit-stall").modal("show");
 	});
+
+	$("#edit-stall").on("click", "span.uid", (e) => {
+		const uid = $(e.target).attr("uid");
+		const pseudo = $(e.target).attr("pseudo");
+		const day = $(e.target).attr("day");
+		const stall = $(e.target).attr("stall");
+		bootbox.confirm("Voulez-vous vraiment désinscrire "+pseudo+" ?", result =>{
+			if (result) {
+				ref.child("kermesse").child("planning").child(day).child(stall).child("enrol").child(uid).remove((error)=>{
+					if (!error) {
+						$("#enrol-"+uid).remove();
+					}
+				});
+			}
+		});
+		
+	});
+	
 
 	$("#planning").on("click", "button.delete", (e) => {
 		const day = $(e.target).attr("day");
@@ -151,6 +194,7 @@ $(function() {
 				min: $("#edit-stall-min").val(),
 				start: $("#edit-stall-start").val(),
 				end: $("#edit-stall-end").val(),
+				customEnrol: $("#edit-stall-force-enroled").val(),
 				description: $("#edit-stall-description").val() //stallMDE.value()
 			};
 			let enrol={};
