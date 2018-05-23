@@ -207,7 +207,7 @@ $(function() {
 			}
 			if (planning[day][originalStall] && originalStall != stall) {
 				//console.log("rename", originalStall, stall);
-				enrol=planning[day][originalStall].enrol;
+				enrol=planning[day][originalStall].enrol || {};
 				ref.child("kermesse").child("planning").child(day).child(originalStall).remove();
 			}
 			infos.enrol = enrol;
