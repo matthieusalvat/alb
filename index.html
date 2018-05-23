@@ -25,6 +25,32 @@
 	<script src="./js/news.js"></script>
   </head>
   <body>
+	<div class="modal fade" id="chat-modal">
+	  <div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h4 class="modal-title"><i>Chat</i> de l'association</h4>
+		  </div>
+		  <div class="modal-body">
+			<p>N'hésitez pas à poser des questions ou faire des remarques dans ce <i>chat</i>. Vous pouvez faire référence à un message en cliquant sur la date ou sur l'expéditeur de ce dernier.</p>
+			<div class="input-group">
+			  <span class="input-group-addon">Nouveau message</span>
+			  <input type="text" class="form-control" id="chat-message" placeholder="Votre message">
+			  <span class="input-group-btn">
+				<button class="btn btn-default" type="button" id="send-message">Envoyer</button>
+			  </span>
+			</div>
+		  </div>
+		  <div class="modal-footer">
+			<dl id="chat-messages" class="dl-horizontal">
+			</dl>
+		  </div>
+		</div>
+	  </div>
+	</div>
 	<div class="modal fade" id="edit-news">
 	  <div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -177,7 +203,7 @@
 		  <ul class="nav navbar-nav control">
 		  </ul>
 		  <p class="navbar-text shorturl"><a href="./kermesse"><b>Kermesse</b></a></p>
-
+		  <p class="navbar-text shorturl"><a href="#" class="chat connected"><span class="glyphicon glyphicon-pencil"></span><i>Chat</i> de l'asso</a></p>
 		  <ul class="nav navbar-nav control">
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">

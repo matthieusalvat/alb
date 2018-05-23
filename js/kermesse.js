@@ -127,8 +127,12 @@ $(function() {
 		const enrol = infos.enrol || {};
 		$("#edit-stall-already-enrols").empty();
 		for (uid in enrol) {
-			let enroled = $("<span>").attr("id", "enrol-"+uid).addClass("label label-default")
-				.append($("<span>").text(enrol[uid]))
+			let userInfos = enrol[uid];
+			if (users && users[uid]) {
+				userInfos = users[uid].firstname+" "+users[uid].lastname+" "+users[uid].email+" "+users[uid].mobile;
+			}
+			let enroled = $("<span>").attr("data-toggle", "tooltip").attr("title", enrol[uid]).attr("id", "enrol-"+uid).addClass("label label-default")
+				.append($("<span>").text(userInfos))
 				.append("&nbsp;")
 				.append($("<span>").attr("day", day).attr("stall", stall).attr("pseudo", enrol[uid]).attr("uid", uid).addClass("uid glyphicon glyphicon-remove"));
 			$("#edit-stall-already-enrols").append(enroled);

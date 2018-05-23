@@ -102,3 +102,28 @@ article p {
 #edit-stall span.uid {
 	cursor: pointer;
 }
+
+/** chat **/
+
+.dl-horizontal dt {
+    text-align: left;
+    width:200px;
+}
+
+.dl-horizontal dd {
+	text-align: left;
+}
+
+span.time.highlight {
+    background-color: #d9edf7;
+} 
+
+span.user.highlight {
+    background-color: #d9edf7;
+} 
+
+a.totoz img{
+    position:absolute;
+    display:none;
+    z-index:100;
+}    

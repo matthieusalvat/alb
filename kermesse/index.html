@@ -25,6 +25,32 @@
 	<script src="../js/kermesse.js"></script>
   </head>
   <body>
+	<div class="modal fade" id="chat-modal">
+	  <div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h4 class="modal-title"><i>Chat</i> de l'association</h4>
+		  </div>
+		  <div class="modal-body">
+			<p>N'hésitez pas à poser des questions ou faire des remarques dans ce <i>chat</i>. Vous pouvez faire référence à un message en cliquant sur la date ou sur l'expéditeur de ce dernier.</p>
+			<div class="input-group">
+			  <span class="input-group-addon">Nouveau message</span>
+			  <input type="text" class="form-control" id="chat-message" placeholder="Votre message">
+			  <span class="input-group-btn">
+				<button class="btn btn-default" type="button" id="send-message">Envoyer</button>
+			  </span>
+			</div>
+		  </div>
+		  <div class="modal-footer">
+			<dl id="chat-messages" class="dl-horizontal">
+			</dl>
+		  </div>
+		</div>
+	  </div>
+	</div>
 	<div class="modal fade" id="edit-stall">
 	  <div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -258,8 +284,7 @@
 		  <ul class="nav navbar-nav control">
 		  </ul>
 		  <p class="navbar-text shorturl">Kermesse</p>
-
-		  
+		  <p class="navbar-text shorturl"><a href="#" class="chat connected"><span class="glyphicon glyphicon-pencil"></span><i>Chat</i> de l'asso</a></p>
 		  <ul class="nav navbar-nav control">
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
@@ -285,7 +310,7 @@
 
 			<p>Pour vous connecter, vous pouvez cliquer sur le bouton <button type="button" class="btn btn-default login" title="Se connecter"><span class="glyphicon glyphicon-log-in"></span></button> disponible en haut à droite de cette page ou sur le bouton suivant <button class="btn btn-default btn-primary login">Je veux participer</button></p>
 			
-			<p>Nous avons sollicité les commerçants de Bégard afin d'avoir des lots pour notre kermesse. Si vous voulez demander des lots à des commerçants d'autres villes (Guingamp, Lannion ...) vous pouvez télécharger <a target="_blank" href="../img/solicitation_commercant-pdfjam.pdf">l'attestation de don de lots</a> et nous <a href="mailto:contact@al-begard.org?subject=[ALB] Récupération de lots pour la kermesse">contacter à l'adresse contact@al-begard.org</a> pour que l'on puisse récupérer les lots récoltés. Vous pouvez aussi déposer les lots dans les écoles.</p>
+			<p>Nous avons sollicité les commerçants de Bégard afin d'avoir des lots pour notre kermesse. Si vous voulez demander des lots à des commerçants d'autres villes que vous connaissez (Guingamp, Lannion ...) vous pouvez télécharger <a target="_blank" href="../img/solicitation_commercant-pdfjam.pdf">l'attestation de don de lots</a> et nous <a href="mailto:contact@al-begard.org?subject=[ALB] Récupération de lots pour la kermesse">contacter à l'adresse contact@al-begard.org</a> pour que l'on puisse récupérer les lots récoltés. Vous pouvez aussi déposer les lots dans les écoles.</p>
 			
 			<p>Ce site a été réalisé pour fonctionner sur des versions récentes de <a href="https://www.google.fr/chrome/index.html" target="_blank">Chrome</a> ou <a href="https://www.mozilla.org/fr/firefox/" target="_blank">Firefox</a>.</p>
 
@@ -299,10 +324,12 @@
 	  </table>
 	  
 	  <h2 class="alert alert-info">Inscription des bénévoles</h2>
-	  <p>C'est ici que vous pouvez vous inscrire pour nous aider à gérer la kermesse.</p>
+	  <p>C'est ici que vous pouvez vous inscrire pour nous aider à organiser la kermesse.</p>
 
 	  <p>Vous devez vous <a href="#" class="login">connecter</a> au site pour pouvoir vous inscrire via les boutons <button class="btn btn-default btn-xs btn-success"><span class="glyphicon glyphicon-plus"></span></button>. Si vous ne voulez pas vous créer un compte sur le site, vous pouvez <a href="mailto:contact@al-begard.org?subject=[ALB] Inscription à la kermesse">nous écrire à l'adresse contact@al-begard.org</a></p>
 	  <p>N'hésitez pas à vous inscrire sur les stands ayant déjà le nombre requis de personnes.</p>
+
+	  <p>Comment fonctionne la colonne "Inscrits" : les "noms" affichés sont les pseudos des personnes ayant un compte sur le site et s'étant inscrit tout seul, les <b>+N</b> correspondent au nombre de personnes qu'un membre de l'association a saisi manuellement (principalement les retours des inscriptions papiers).</p>
 	  
 	  <div id="planning">
 		
