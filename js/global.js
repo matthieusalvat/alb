@@ -76,6 +76,33 @@ function formatTimestamp(time, withDate) {
     return str;
 };
 
+function addChat() {
+	ref.child("chat").child("benevoles").on("child_added", (snapshot) => {
+		const data = snapshot.val();
+        const parts=data.message.split(/(\[:[^\]]*\]|\s+)/);
+        const messageDiv=$("<dd>");
+        parts.forEach(function(part) {
+            if (part) {
+				if (m=part.match(/^\[:([^\]]*)\]$/)) {
+					messageDiv.append($("<a>").addClass('totoz').attr('href', "#"+m[1]).text(part+" ").append($("<img>").attr('src', 'https://totoz.eu/'+m[1]+'.gif')));
+				} else if (m=part.match(/^(\d\d\/\d\d-)?(\d\d):(\d\d):(\d\d)$/)) {
+					var timeRef=m[2]+m[3]+m[4];
+					messageDiv.append($("<span>").addClass("time").attr('ref', part).text(part+" "));
+				} else if (m=part.match(/([a-zA-Z0-9\-]+)</)) {
+					var userRef=m[1];
+					messageDiv.append($("<span>").addClass("user").attr('ref', m[1]).text(part+" "));
+				} else if (m=part.match(/^(.*)((https?|ftp|gopher):\/\/[^),]+)(.*)$/)) {
+					messageDiv.append($("<span>").text(m[1])).append($("<a>").attr('target', "_blank").attr('href', m[2]).text(m[2])).append($("<span>").text(m[4]));
+				} else {
+					messageDiv.append($("<span>").text(part+" "));
+				}
+            }
+		});
+		
+		$("#chat-messages").prepend(messageDiv).prepend(($("<dt>").html("<span class='time' ref='"+formatTimestamp(data.time, true)+"'>["+formatTimestamp(data.time, true).replace("-", " ") + "]</span> <span class='user' uid='"+data.uid+"' ref='"+data.pseudo+"'>" + data.pseudo + "</span>")));
+	});
+}
+
 function checkConnected() {
 	//console.log("checkConnected", currentUser, currentProfile);
 	if (currentUser) {
@@ -115,6 +142,7 @@ function checkAuth(error, user) {
 					users = snapshot.val();
 				});
 			}
+			addChat();
 			ref.child("users").child(user.uid).once("value", (snapshot) => {
 				currentProfile=snapshot.val();
 				if (!currentProfile) {
@@ -184,31 +212,6 @@ $(function() {
 		$(e.target).children().hide();
     });
 	
-	ref.child("chat").child("benevoles").on("child_added", (snapshot) => {
-		const data = snapshot.val();
-        const parts=data.message.split(/(\[:[^\]]*\]|\s+)/);
-        const messageDiv=$("<dd>");
-        parts.forEach(function(part) {
-            if (part) {
-				if (m=part.match(/^\[:([^\]]*)\]$/)) {
-					messageDiv.append($("<a>").addClass('totoz').attr('href', "#"+m[1]).text(part+" ").append($("<img>").attr('src', 'https://totoz.eu/'+m[1]+'.gif')));
-				} else if (m=part.match(/^(\d\d\/\d\d-)?(\d\d):(\d\d):(\d\d)$/)) {
-					var timeRef=m[2]+m[3]+m[4];
-					messageDiv.append($("<span>").addClass("time").attr('ref', part).text(part+" "));
-				} else if (m=part.match(/([a-zA-Z0-9\-]+)</)) {
-					var userRef=m[1];
-					messageDiv.append($("<span>").addClass("user").attr('ref', m[1]).text(part+" "));
-				} else if (m=part.match(/^(.*)((https?|ftp|gopher):\/\/[^),]+)(.*)$/)) {
-					messageDiv.append($("<span>").text(m[1])).append($("<a>").attr('target', "_blank").attr('href', m[2]).text(m[2])).append($("<span>").text(m[4]));
-				} else {
-					messageDiv.append($("<span>").text(part+" "));
-				}
-            }
-		});
-		
-		$("#chat-messages").prepend(messageDiv).prepend(($("<dt>").html("<span class='time' ref='"+formatTimestamp(data.time, true)+"'>["+formatTimestamp(data.time, true).replace("-", " ") + "]</span> <span class='user' uid='"+data.uid+"' ref='"+data.pseudo+"'>" + data.pseudo + "</span>")));
-	});
-
     $("#chat-message").keypress(function (e) {
 		if (e.which == 13) {
 			$("#send-message").trigger("click");
@@ -269,6 +272,8 @@ $(function() {
 	});
 
 	$(".logout").on("click", (e) => {
+		$("#chat-messages").empty();
+		ref.child("chat").child("benevoles").off("child_added");
 		ref.logout();
 	});
 	
