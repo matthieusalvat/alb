@@ -47,6 +47,11 @@ function checkAuth(error, user) {
 			ref.child("users").child(user.uid).once("value", (snapshot) => {
 				currentProfile=snapshot.val();
 				if (!currentProfile) {
+					if (currentUser.providerUid.substr(-14) == '@al-begard.org') {
+						let pseudo=currentUser.providerUid.replace('@al-begard.org', '');
+						$("#pseudo").val(pseudo.charAt(0).toUpperCase() + pseudo.slice(1));
+						$("#firstname").val(pseudo.charAt(0).toUpperCase() + pseudo.slice(1));
+					}
 					$("#login-modal").modal("hide");
 					$("#profile-modal").modal("show");
 				} else {
@@ -140,6 +145,7 @@ $(function() {
 				} else {
 					currentProfile=profile;
 					$("#profile-modal").modal("hide");
+					checkConnected();
 				}
 			}
 		);
