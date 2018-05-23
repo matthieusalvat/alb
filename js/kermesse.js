@@ -205,7 +205,7 @@ $(function() {
 			if (planning[day][stall] && planning[day][stall].enrol) {
 				enrol=planning[day][stall].enrol;
 			}
-			if (planning[day][originalStall] && planning[day][originalStall].enrol && originalStall != stall) {
+			if (planning[day][originalStall] && originalStall != stall) {
 				//console.log("rename", originalStall, stall);
 				enrol=planning[day][originalStall].enrol;
 				ref.child("kermesse").child("planning").child(day).child(originalStall).remove();
