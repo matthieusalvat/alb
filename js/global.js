@@ -250,6 +250,7 @@ $(function() {
 		//console.log("profile", currentProfile);
 		if (currentProfile) {
 			$("#firstname").val(currentProfile.firstname);
+			$("#activity").val(currentProfile.activity);
 			$("#lastname").val(currentProfile.lastname);
 			$("#pseudo").attr("old", currentProfile.pseudo).val(currentProfile.pseudo);
 			$("#mobile").val(currentProfile.mobile);
@@ -300,6 +301,7 @@ $(function() {
 		const firstname = $("#firstname").val();
 		const lastname = $("#lastname").val();
 		const pseudo = $("#pseudo").val();
+		const activity = $("#activity").val();
 		const oldPseudo = $("#pseudo").attr("old");
 		let mobile = $("#mobile").val();
 		if (mobile) {
@@ -321,7 +323,7 @@ $(function() {
 					ref.child("pseudos").child(oldPseudo).remove();
 				}
 				ref.child("pseudos").child(pseudo).set(currentUser.uid);
-				const profile = { firstname, lastname, pseudo, mobile, email: currentUser.providerUid };
+				const profile = { firstname, lastname, pseudo, mobile, activity, email: currentUser.providerUid };
 				ref.child("users").child(currentUser.uid).update(
 					profile,
 					(error) => {
