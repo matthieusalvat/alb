@@ -12,6 +12,27 @@ let currentUser;
 let currentProfile;
 let users=null;
 
+function logAction(page, type, action) {
+	if (ref && currentUser) {
+		const date=formatDate(Date.now());
+		let pseudo="";
+		let email="";
+		if (currentProfile && currentProfile.pseudo) {
+			pseudo=currentProfile.pseudo;
+			email=currentProfile.email;
+		}
+		ref.child("log").child(date).push({
+			page,
+			type,
+			action,
+			email,
+			pseudo,
+			time: Webcom.ServerValue.TIMESTAMP,
+			uid: currentUser.uid,
+		});
+	}
+}
+
 function insertAtCaret(areaId,text) {
     var txtarea = document.getElementById(areaId);
     var scrollPos = txtarea.scrollTop;
@@ -46,30 +67,45 @@ function insertAtCaret(areaId,text) {
     txtarea.scrollTop = scrollPos;
 }
 
-function formatTimestamp(time, withDate) {
-    var date = new Date(time);
+function formatDate(time) {
+    let date = new Date(time);
 	
-    var day = date.getDate();
+    let day = date.getDate();
     if (day < 10) {
         day = '0' + day;
     }
-    var month = date.getMonth() + 1;
+    let month = date.getMonth() + 1;
     if (month < 10) {
         month = '0' + month;
     }
-    var hours = date.getHours();
+	let year = date.getFullYear();
+	return year+"-"+month+"-"+day;
+}
+
+function formatTimestamp(time, withDate) {
+    let date = new Date(time);
+	
+    let day = date.getDate();
+    if (day < 10) {
+        day = '0' + day;
+    }
+    let month = date.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    let hours = date.getHours();
     if (hours < 10) {
         hours = '0' + hours;
     }
-    var minutes = date.getMinutes();
+    let minutes = date.getMinutes();
     if (minutes < 10) {
         minutes = '0' + minutes;
     }
-    var seconds = date.getSeconds();
+    let seconds = date.getSeconds();
     if (seconds < 10) {
         seconds = '0' + seconds;
     }
-    var str=hours + ':' + minutes + ':' + seconds;
+    let str=hours + ':' + minutes + ':' + seconds;
     if (withDate) {
 		str=day+"/"+month+"-"+str;
     }
@@ -86,10 +122,10 @@ function addChat() {
 				if (m=part.match(/^\[:([^\]]*)\]$/)) {
 					messageDiv.append($("<a>").addClass('totoz').attr('href', "#"+m[1]).text(part+" ").append($("<img>").attr('src', 'https://totoz.eu/'+m[1]+'.gif')));
 				} else if (m=part.match(/^(\d\d\/\d\d-)?(\d\d):(\d\d):(\d\d)$/)) {
-					var timeRef=m[2]+m[3]+m[4];
+					let timeRef=m[2]+m[3]+m[4];
 					messageDiv.append($("<span>").addClass("time").attr('ref', part).text(part+" "));
 				} else if (m=part.match(/([a-zA-Z0-9\-]+)</)) {
-					var userRef=m[1];
+					let userRef=m[1];
 					messageDiv.append($("<span>").addClass("user").attr('ref', m[1]).text(part+" "));
 				} else if (m=part.match(/^(.*)((https?|ftp|gopher):\/\/[^),]+)(.*)$/)) {
 					messageDiv.append($("<span>").text(m[1])).append($("<a>").attr('target', "_blank").attr('href', m[2]).text(m[2])).append($("<span>").text(m[4]));
@@ -183,8 +219,8 @@ $(function() {
     });
 	
     $("#chat-modal").on("click", "dt span.time", function(e) {
-		var time=$(e.target).attr('ref');
-		var txtToAdd=time+" ";
+		let time=$(e.target).attr('ref');
+		let txtToAdd=time+" ";
 		insertAtCaret("chat-message", txtToAdd);
     });
 	

@@ -57,7 +57,8 @@ $(function() {
 		const id = $(e.target).attr("news");
 		bootbox.confirm("Voulez-vous vraiment supprimer cette actualité ?", result =>{
 			if (result) {
-				ref.child("kermesse").child("news").child(id).remove();
+				const removed=ref.child("kermesse").child("news").child(id).remove();
+				logAction("news", "remove", id+": "+removed.val().title);
 			}
 		});
 	});
@@ -104,11 +105,12 @@ $(function() {
 					if (error) {
 						$("#edit-news-error").text(error).show();
 					} else {
+						logAction("news", "edit", oldId+": "+title);
 						$("#edit-news").modal("hide");
 					}
 				});
 			} else {
-				ref.child("kermesse").child("news").push({
+				const id=ref.child("kermesse").child("news").push({
 					title,
 					content,
 					signature,
@@ -122,6 +124,8 @@ $(function() {
 					if (error) {
 						$("#edit-news-error").text(error).show();
 					} else {
+						logAction("news", "create", id+": "+title);
+						
 						$("#edit-news").modal("hide");
 					}
 				});

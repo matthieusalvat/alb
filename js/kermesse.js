@@ -89,7 +89,7 @@ $(function() {
 								if (error) {
 									alert(error);
 								} else {
-									
+									logAction("planning", "subscribe", day+" "+stall);
 								}
 							});
 					}
@@ -102,7 +102,7 @@ $(function() {
 								if (error) {
 									alert(error);
 								} else {
-									
+									logAction("planning", "unsubscribe", day+" "+stall);
 								}
 							});
 					}
@@ -152,6 +152,7 @@ $(function() {
 			if (result) {
 				ref.child("kermesse").child("planning").child(day).child(stall).child("enrol").child(uid).remove((error)=>{
 					if (!error) {
+						logAction("planning", "unsubscribe", day+" "+stall+": "+pseudo+" "+uid);
 						$("#enrol-"+uid).remove();
 					}
 				});
@@ -166,6 +167,7 @@ $(function() {
 		const stall = $(e.target).attr("stall");
 		bootbox.confirm("Voulez-vous vraiment supprimer cette entrée ?", result =>{
 			if (result) {
+				logAction("planning", "remove", day+" "+stall);
 				ref.child("kermesse").child("planning").child(day).child(stall).remove();
 			}
 		});
@@ -208,6 +210,7 @@ $(function() {
 			if (planning[day][originalStall] && originalStall != stall) {
 				//console.log("rename", originalStall, stall);
 				enrol=planning[day][originalStall].enrol || {};
+				logAction("planning", "remove", day+" "+stall);
 				ref.child("kermesse").child("planning").child(day).child(originalStall).remove();
 			}
 			infos.enrol = enrol;
@@ -218,6 +221,11 @@ $(function() {
 					if (error) {
 						$("#edit-stall-error").text(error).show();
 					} else {
+						if (originalStall) {
+							logAction("planning", "edit", day+" "+stall);
+						} else {
+							logAction("planning", "create", day+" "+stall);
+						}
 						$("#edit-stall").modal("hide");
 					}
 				}
@@ -285,6 +293,7 @@ $(function() {
 			
 			if (originalAction && todos[group][originalAction] && originalAction != action) {
 				//console.log("rename", originalAction, action);
+				logAction("todo", "remove", group+" "+originalAction);
 				ref.child("kermesse").child("todo").child(group).child(originalAction).remove();
 			}
 			
@@ -298,6 +307,11 @@ $(function() {
 					if (error) {
 						$("#edit-todo-error").text(error).show();
 					} else {
+						if (originalAction) {
+							logAction("todo", "edit", group+" "+action);
+						} else {
+							logAction("todo", "create", group+" "+action);
+						}
 						$("#edit-todo").modal("hide");
 					}
 				}
@@ -332,6 +346,7 @@ $(function() {
 		bootbox.confirm("Voulez-vous vraiment supprimer cette action ?", result =>{
 			if (result) {
 				ref.child("kermesse").child("todo").child(group).child(action).remove();
+				logAction("todo", "remove", group+" "+action);
 			}
 		});
 	});
