@@ -15,7 +15,11 @@ $(function() {
 		const infos = snapshot.val();
 		const id = snapshot.name();
 		$("#"+id+" header>span").text(infos.title);
-		$("#"+id+" p").html(mdConverter.makeHtml(infos.content));
+		$("#"+id+" p.content").html(mdConverter.makeHtml(infos.content));
+		if (infos.signature) {
+			$("#"+id+" p.signature").html(infos.signature.replace(/\n/g, "<br>"));
+		}
+		
 		checkConnected();
 	});
 
@@ -31,7 +35,9 @@ $(function() {
 				   .append("&nbsp;")
 				   .append($("<button>").attr("news", id).addClass("delete connected admin btn btn-default btn-xs btn-danger").append($("<span>").addClass("glyphicon glyphicon-remove")))
 				  );
-		div.append($("<p>").html(mdConverter.makeHtml(infos.content)));
+		div.append($("<p>").addClass("content").html(mdConverter.makeHtml(infos.content)));
+		const signature = infos.signature || "";
+		div.append($("<p>").addClass("signature").html(signature.replace(/\n/g, "<br>")));
 		$("#news").prepend(div);
 		checkConnected();
 	});
@@ -39,6 +45,11 @@ $(function() {
 	$("#add-news").on("click", (e) => {
 		$("#edit-news-title").removeAttr("disabled").attr("news", "").val("");
 		newsMDE.value("");
+		let signature = currentProfile.pseudo;
+		if (currentProfile.activity) {
+			signature+="\n"+currentProfile.activity;
+		}
+		$("#edit-news-signature").val(signature);
 		$("#edit-news").modal("show");
 	});
 
@@ -56,6 +67,16 @@ $(function() {
 		if (news[id]) {
 			$("#edit-news-title").attr("news", id).val(news[id].title);
 			newsMDE.value(news[id].content);
+			let signature="";
+			if (news[id].signature) {
+				signature=news[id].signature;
+			} else {
+				signature = currentProfile.pseudo;
+				if (currentProfile.activity) {
+					signature+="\n"+currentProfile.activity;
+				}
+			}
+			$("#edit-news-signature").val(signature);
 			$("#edit-news").modal("show");
 		}
 	});
@@ -63,14 +84,16 @@ $(function() {
 	$("#edit-news-save").on("click", (e) => {
 		const title = $("#edit-news-title").val();
 		const content = newsMDE.value();
+		const signature = $("#edit-news-signature").val();
 		const oldId = $("#edit-news-title").attr("news");
 		if (! title) {
 			$("#edit-news-error").text("Merci de donner un titre").show();
 		} else {
 			if (oldId && news[oldId]) {
 				ref.child("kermesse").child("news").child(oldId).update({
-					title: title,
-					content: content,
+					title,
+					content,
+					signature,
 					editedAt : Webcom.ServerValue.TIMESTAMP,
 					editedBy: {
 						uid: currentUser.uid,
@@ -86,8 +109,9 @@ $(function() {
 				});
 			} else {
 				ref.child("kermesse").child("news").push({
-					title: title,
-					content: content,
+					title,
+					content,
+					signature,
 					createdAt : Webcom.ServerValue.TIMESTAMP,
 					createdBy: {
 						uid: currentUser.uid,
