@@ -112,6 +112,16 @@ function formatTimestamp(time, withDate) {
     return str;
 };
 
+function addLogs() {
+	const date = formatDate(Date.now());
+	
+	ref.child("log").child(date).on("child_added", (snapshot) => {
+		const data = snapshot.val();
+		const messageDiv=$("<dd>").text(data.type+" "+data.page+" "+data.action);
+		$("#log-entries").prepend(messageDiv).prepend($("<dt>").text(formatTimestamp(data.time, false)+" "+data.pseudo));
+	});
+}
+
 function addChat() {
 	ref.child("chat").child("benevoles").on("child_added", (snapshot) => {
 		const data = snapshot.val();
@@ -174,6 +184,7 @@ function checkAuth(error, user) {
 			$(".connected").show();
 			$(".pseudo").text(user.providerUid);
 			if (currentUser.providerUid.substr(-14) == '@al-begard.org') {
+				addLogs();			
 				ref.child("users").once("value", (snapshot) => {
 					users = snapshot.val();
 				});
@@ -278,9 +289,17 @@ $(function() {
 		$("#register-modal").modal("hide");
 		$("#login-modal").modal("hide");
 		$("#profile-modal").modal("hide");
+		$("#log-modal").modal("hide");
 		$("#chat-modal").modal("show");
 	});
-		
+
+	$("body").on("click", ".log", (e) => {
+		$("#register-modal").modal("hide");
+		$("#login-modal").modal("hide");
+		$("#profile-modal").modal("hide");
+		$("#chat-modal").modal("hide");
+		$("#log-modal").modal("show");
+	});
 	
 	$(".profile").on("click", (e) => {
 		//console.log("profile", currentProfile);
@@ -310,6 +329,11 @@ $(function() {
 
 	$(".logout").on("click", (e) => {
 		$("#chat-messages").empty();
+		$("#log-entries").empty();
+		const date = formatDate(Date.now());
+		if (currentUser.providerUid.substr(-14) == '@al-begard.org') {
+			ref.child("log").child(date).off("child_added");
+		}
 		ref.child("chat").child("benevoles").off("child_added");
 		ref.logout();
 	});

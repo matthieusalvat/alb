@@ -25,6 +25,24 @@
 	<script src="./js/news.js"></script>
   </head>
   <body>
+	<div class="modal fade" id="log-modal">
+	  <div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h4 class="modal-title">Que s'est-il passé aujourd'hui?</h4>
+		  </div>
+		  <div class="modal-body">
+			<dl id="log-entries" class="dl-horizontal">
+			</dl>
+		  </div>
+		  <div class="modal-footer">
+		  </div>
+		</div>
+	  </div>
+	</div>
 	<div class="modal fade" id="chat-modal">
 	  <div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
@@ -211,7 +229,8 @@
 		  <ul class="nav navbar-nav control">
 		  </ul>
 		  <p class="navbar-text shorturl"><a href="./kermesse"><b>Kermesse</b></a></p>
-		  <p class="navbar-text shorturl"><a href="#" class="chat connected"><span class="glyphicon glyphicon-pencil"></span><i>Chat</i> de l'asso</a></p>
+		  <p class="navbar-text shorturl"><a href="#" class="chat connected"><span class="glyphicon glyphicon-pencil"></span>&nbsp;<i>Chat</i> de l'asso</a></p>
+		  <p class="navbar-text shorturl"><a href="#" class="log connected admin"><span class="glyphicon glyphicon-list"></span>&nbsp;Historique</a></p>
 		  <ul class="nav navbar-nav control">
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
