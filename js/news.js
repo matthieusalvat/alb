@@ -58,7 +58,7 @@ $(function() {
 		bootbox.confirm("Voulez-vous vraiment supprimer cette actualité ?", result =>{
 			if (result) {
 				const removed=ref.child("kermesse").child("news").child(id).remove();
-				logAction("news", "remove", id+": "+removed.val().title);
+				logAction("news", "remove", removed.val().title, removed);
 			}
 		});
 	});
@@ -90,45 +90,37 @@ $(function() {
 		if (! title) {
 			$("#edit-news-error").text("Merci de donner un titre").show();
 		} else {
+			const data = {
+				title,
+				content,
+				signature,
+				editedAt : Webcom.ServerValue.TIMESTAMP,
+				editedBy: {
+					uid: currentUser.uid,
+					email: currentUser.providerUid,
+					pseudo: currentProfile.pseudo
+				}
+			};
 			if (oldId && news[oldId]) {
-				ref.child("kermesse").child("news").child(oldId).update({
-					title,
-					content,
-					signature,
-					editedAt : Webcom.ServerValue.TIMESTAMP,
-					editedBy: {
-						uid: currentUser.uid,
-						email: currentUser.providerUid,
-						pseudo: currentProfile.pseudo
-					}
-				}, (error) => {
-					if (error) {
-						$("#edit-news-error").text(error).show();
-					} else {
-						logAction("news", "edit", oldId+": "+title);
-						$("#edit-news").modal("hide");
-					}
-				});
+				ref.child("kermesse").child("news").child(oldId).update(
+					data, (error) => {
+						if (error) {
+							$("#edit-news-error").text(error).show();
+						} else {
+							logAction("news", "edit", title, data);
+							$("#edit-news").modal("hide");
+						}
+					});
 			} else {
-				const id=ref.child("kermesse").child("news").push({
-					title,
-					content,
-					signature,
-					createdAt : Webcom.ServerValue.TIMESTAMP,
-					createdBy: {
-						uid: currentUser.uid,
-						email: currentUser.providerUid,
-						pseudo: currentProfile.pseudo
-					}
-				}, (error) => {
-					if (error) {
-						$("#edit-news-error").text(error).show();
-					} else {
-						logAction("news", "create", id+": "+title);
-						
-						$("#edit-news").modal("hide");
-					}
-				});
+				const id=ref.child("kermesse").child("news").push(
+					data, (error) => {
+						if (error) {
+							$("#edit-news-error").text(error).show();
+						} else {
+							logAction("news", "create", title, data);
+							$("#edit-news").modal("hide");
+						}
+					});
 			}
 		}
 	});

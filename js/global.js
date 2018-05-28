@@ -12,9 +12,10 @@ let currentUser;
 let currentProfile;
 let users=null;
 
-function logAction(page, type, action) {
+function logAction(page, type, action, data) {
 	if (ref && currentUser) {
 		const date=formatDate(Date.now());
+		data = data ? data : {};
 		let pseudo="";
 		let email="";
 		if (currentProfile && currentProfile.pseudo) {
@@ -24,6 +25,7 @@ function logAction(page, type, action) {
 		ref.child("log").child(date).push({
 			page,
 			type,
+			data,
 			action,
 			email,
 			pseudo,
@@ -114,10 +116,19 @@ function formatTimestamp(time, withDate) {
 
 function addLogs() {
 	const date = formatDate(Date.now());
-	
+	const tr = {
+		"edit": "Modification",
+		"create": "Création",
+		"remove": "Suppression",
+		"subscribe": "Inscription",
+		"unsubscribe": "Désinscription",
+		"news" : "Actualités",
+		"planning" : "Stand",
+		"todo" : "Truc à faire"
+	};
 	ref.child("log").child(date).on("child_added", (snapshot) => {
 		const data = snapshot.val();
-		const messageDiv=$("<dd>").text(data.type+" "+data.page+" "+data.action);
+		const messageDiv=$("<dd>").text((tr[data.type] || data.type)+" \""+(tr[data.page] || data.page) +"\" \""+data.action+"\"");
 		$("#log-entries").prepend(messageDiv).prepend($("<dt>").text(formatTimestamp(data.time, false)+" "+data.pseudo));
 	});
 }

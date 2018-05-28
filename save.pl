@@ -24,7 +24,7 @@ if (-f $DIR."/".@files[-2] && @files[-2] ne $filename) {
 	system($diff);
 	if ($? < 0) {
 		print "Problem detected, keep $DIR/$filename\n";
-	} elsif ($? == 1) {
+	} elsif ($? > 1) {
 		print "File are different, keep $DIR/$filename\n";
 	} else {
 		print "File are the same, remove $DIR/$filename\n";

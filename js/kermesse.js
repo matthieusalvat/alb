@@ -89,7 +89,7 @@ $(function() {
 								if (error) {
 									alert(error);
 								} else {
-									logAction("planning", "subscribe", day+" "+stall);
+									logAction("planning", "subscribe", day+":"+stall);
 								}
 							});
 					}
@@ -102,7 +102,7 @@ $(function() {
 								if (error) {
 									alert(error);
 								} else {
-									logAction("planning", "unsubscribe", day+" "+stall);
+									logAction("planning", "unsubscribe", day+":"+stall);
 								}
 							});
 					}
@@ -152,7 +152,7 @@ $(function() {
 			if (result) {
 				ref.child("kermesse").child("planning").child(day).child(stall).child("enrol").child(uid).remove((error)=>{
 					if (!error) {
-						logAction("planning", "unsubscribe", day+" "+stall+": "+pseudo+" "+uid);
+						logAction("planning", "unsubscribe", day+":"+stall+":"+pseudo, {uid: uid});
 						$("#enrol-"+uid).remove();
 					}
 				});
@@ -167,8 +167,8 @@ $(function() {
 		const stall = $(e.target).attr("stall");
 		bootbox.confirm("Voulez-vous vraiment supprimer cette entrée ?", result =>{
 			if (result) {
-				logAction("planning", "remove", day+" "+stall);
-				ref.child("kermesse").child("planning").child(day).child(stall).remove();
+				const d=ref.child("kermesse").child("planning").child(day).child(stall).remove();
+				logAction("planning", "remove", day+":"+stall, d);
 			}
 		});
 	});
@@ -210,8 +210,8 @@ $(function() {
 			if (planning[day][originalStall] && originalStall != stall) {
 				//console.log("rename", originalStall, stall);
 				enrol=planning[day][originalStall].enrol || {};
-				logAction("planning", "remove", day+" "+stall);
-				ref.child("kermesse").child("planning").child(day).child(originalStall).remove();
+				const d=ref.child("kermesse").child("planning").child(day).child(originalStall).remove();
+				logAction("planning", "remove", day+":"+stall, d);
 			}
 			infos.enrol = enrol;
 			//console.log(infos);
@@ -222,9 +222,9 @@ $(function() {
 						$("#edit-stall-error").text(error).show();
 					} else {
 						if (originalStall) {
-							logAction("planning", "edit", day+" "+stall);
+							logAction("planning", "edit", day+":"+stall, infos);
 						} else {
-							logAction("planning", "create", day+" "+stall);
+							logAction("planning", "create", day+":"+stall, infos);
 						}
 						$("#edit-stall").modal("hide");
 					}
@@ -293,24 +293,24 @@ $(function() {
 			
 			if (originalAction && todos[group][originalAction] && originalAction != action) {
 				//console.log("rename", originalAction, action);
-				logAction("todo", "remove", group+" "+originalAction);
-				ref.child("kermesse").child("todo").child(group).child(originalAction).remove();
+				const d = ref.child("kermesse").child("todo").child(group).child(originalAction).remove();
+				logAction("todo", "remove", group+":"+originalAction, d);
 			}
-			
+			const data = {
+				progression: progression,
+				done: done,
+				who: who
+			};
 			ref.child("kermesse").child("todo").child(group).child(action).set(
-				{
-					progression: progression,
-					done: done,
-					who: who
-				},
+				data,
 				(error) => {
 					if (error) {
 						$("#edit-todo-error").text(error).show();
 					} else {
 						if (originalAction) {
-							logAction("todo", "edit", group+" "+action);
+							logAction("todo", "edit", group+":"+action, data);
 						} else {
-							logAction("todo", "create", group+" "+action);
+							logAction("todo", "create", group+":"+action, data);
 						}
 						$("#edit-todo").modal("hide");
 					}
@@ -345,8 +345,8 @@ $(function() {
 		const action = $(e.target).attr("action");
 		bootbox.confirm("Voulez-vous vraiment supprimer cette action ?", result =>{
 			if (result) {
-				ref.child("kermesse").child("todo").child(group).child(action).remove();
-				logAction("todo", "remove", group+" "+action);
+				const d=ref.child("kermesse").child("todo").child(group).child(action).remove();
+				logAction("todo", "remove", group+":"+action, d);
 			}
 		});
 	});
