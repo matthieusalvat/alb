@@ -10,6 +10,7 @@
 	<link href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
 	<link href="//gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 	<link href="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" rel="stylesheet">
+	<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
 	<link href="./css/alb.css" rel="stylesheet">
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -20,7 +21,8 @@
 	<script src="//gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 	<script src="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/showdown/1.8.5/showdown.min.js"></script>
-
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.fr.min.js"></script>
 	<script src="./js/global.js"></script>
 	<script src="./js/news.js"></script>
   </head>
@@ -32,7 +34,11 @@
 			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
 			  <span aria-hidden="true">&times;</span>
 			</button>
-			<h4 class="modal-title">Que s'est-il passé aujourd'hui sur le site?</h4>
+			<h4 class="modal-title">
+			  <form class="form-inline" role="form">
+				Que s'est-il passé sur le site le <input class="datepicker form-control"> ?
+			  </form>
+			</h4>
 		  </div>
 		  <div class="modal-body">
 			<dl id="log-entries" class="dl-horizontal">

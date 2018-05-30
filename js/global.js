@@ -69,7 +69,7 @@ function insertAtCaret(areaId,text) {
     txtarea.scrollTop = scrollPos;
 }
 
-function formatDate(time) {
+function formatDate(time, human) {
     let date = new Date(time);
 	
     let day = date.getDate();
@@ -81,7 +81,11 @@ function formatDate(time) {
         month = '0' + month;
     }
 	let year = date.getFullYear();
-	return year+"-"+month+"-"+day;
+	if (human) {
+		return day+"/"+month+"/"+year;
+	} else {
+		return year+"-"+month+"-"+day;
+	}
 }
 
 function formatTimestamp(time, withDate) {
@@ -114,8 +118,13 @@ function formatTimestamp(time, withDate) {
     return str;
 };
 
-function addLogs() {
-	const date = formatDate(Date.now());
+let lastDate;
+function addLogs(d) {
+	const date = formatDate(d || Date.now());
+	if (lastDate) {
+		$("#log-entries").empty();
+		ref.child("log").child(lastDate).off("child_added");
+	}
 	const tr = {
 		"edit": "Modification",
 		"create": "Création",
@@ -131,6 +140,7 @@ function addLogs() {
 		const messageDiv=$("<dd>").text((tr[data.type] || data.type)+" \""+(tr[data.page] || data.page) +"\" \""+data.action+"\"");
 		$("#log-entries").prepend(messageDiv).prepend($("<dt>").text(formatTimestamp(data.time, false)+" "+data.pseudo));
 	});
+	lastDate=formatDate(date);
 }
 
 function addChat() {
@@ -201,6 +211,7 @@ function checkAuth(error, user) {
 				});
 			}
 			addChat();
+			$('.datepicker').val(formatDate(Date.now(), true));
 			ref.child("users").child(user.uid).once("value", (snapshot) => {
 				currentProfile=snapshot.val();
 				if (!currentProfile) {
@@ -226,7 +237,17 @@ function checkAuth(error, user) {
 }
 
 
-$(function() {	
+$(function() {
+	$('.datepicker').datepicker({
+		language: 'fr',
+		endDate: '+0d',
+		startDate: '-2m',
+		todayHighlight: true,
+		autoclose: true,
+	}).on("changeDate", (e, date) => {
+		addLogs(e.date);
+	});
+	
 	$("#edit-action-done").bootstrapToggle({
 		on: 'Oui',
 		off: 'Non'
@@ -341,9 +362,8 @@ $(function() {
 	$(".logout").on("click", (e) => {
 		$("#chat-messages").empty();
 		$("#log-entries").empty();
-		const date = formatDate(Date.now());
 		if (currentUser.providerUid.substr(-14) == '@al-begard.org') {
-			ref.child("log").child(date).off("child_added");
+			ref.child("log").child(lastDate).off("child_added");
 		}
 		ref.child("chat").child("benevoles").off("child_added");
 		ref.logout();

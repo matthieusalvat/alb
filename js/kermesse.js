@@ -30,8 +30,23 @@ $(function() {
 					const enrol = infos.enrol || {};
 					let customEnrol = (infos.customEnrol || "").split(/\n/);
 					customEnrol=customEnrol.filter(c=>c.match(/\w/));
-					const enroled = Object.keys(enrol).length+customEnrol.length;
-					//console.log(day, stall, enrol);
+					let enroled = Object.keys(enrol).length+customEnrol.length;
+					let enroledText="";
+					Object.values(enrol).forEach((e) => {
+						if (typeof e == 'object') {
+							enroledText+='<br>'+e.pseudo;
+							if (e.number>1) {
+								enroled+=(e.number-1);
+								enroledText+="+"+(e.number-1);
+							}
+						} else {
+							enroledText+='<br>'+e;
+						}
+					});
+					if (customEnrol.length>0) {
+						enroledText+="<br>+"+customEnrol.length;
+					}
+
 					let c;
 					if (enroled < infos.min) {
 						c="danger";
@@ -48,10 +63,7 @@ $(function() {
 					tr.append($("<td>").text(infos.where));
 					tr.append($("<td>").text(infos.description).css("white-space", "pre"));
 					tr.append($("<td>").text(enroled+"/"+infos.min));
-					let enroledText=Object.values(enrol).join('<br>');
-					if (customEnrol.length>0) {
-						enroledText+="<br>+"+customEnrol.length;
-					}
+					
 					tr.append($("<td>").html(enroledText));
 					const td=$("<td>")
 						  .append($("<button>").attr("title", "Modifier").addClass("edit connected admin btn btn-default btn-xs btn-warning").attr("day", day).attr("stall",stall).append($("<span>").addClass("glyphicon glyphicon-edit"))).addClass(c)
@@ -81,17 +93,51 @@ $(function() {
 		const infos = planning[day][stall];
 		if (currentUser && currentUser.uid && currentProfile.pseudo) {
 			if (! infos.enrol || ! infos.enrol[currentUser.uid]) {
-				bootbox.confirm("Voulez-vous vraiment vous inscrire pour le "+day+" de "+infos.start+"h à "+infos.end+"h ?", result =>{
-					if (result) {
-						ref.child("kermesse").child("planning").child(day).child(stall).child("enrol").child(currentUser.uid).set(
-							currentProfile.pseudo,
-							(error)=>{
-								if (error) {
-									alert(error);
-								} else {
-									logAction("planning", "subscribe", day+":"+stall);
-								}
-							});
+				bootbox.prompt({
+					title: "Voulez-vous vraiment vous inscrire pour le "+day+" de "+infos.start+"h à "+infos.end+"h ?",
+					inputType: 'select',
+					inputOptions: [
+						{
+							text: 'Je viens seul',
+							value: '1',
+						},
+						{
+							text: "Je viens avec quelqu'un pour aider",
+							value: '2',
+						},
+						{
+							text: 'Je viens avec 2 personnes pour aider',
+							value: '3',
+						},
+						{
+							text: 'Je viens avec 3 personnes pour aider',
+							value: '4',
+						},
+						{
+							text: 'Je viens avec 4 personnes pour aider',
+							value: '5',
+						},
+						{
+							text: 'Je viens avec 5 personnes pour aider',
+							value: '6',
+						}
+					],
+					callback: result => {
+						if (result) {
+							ref.child("kermesse").child("planning").child(day).child(stall).child("enrol").child(currentUser.uid).set(
+								{
+									'pseudo': currentProfile.pseudo,
+									'number': result,
+								},
+								(error)=>{
+									if (error) {
+										alert(error);
+									} else {
+										logAction("planning", "subscribe", day+":"+stall);
+									}
+								});
+							
+						}
 					}
 				});
 			} else {
@@ -128,13 +174,27 @@ $(function() {
 		$("#edit-stall-already-enrols").empty();
 		for (uid in enrol) {
 			let userInfos = enrol[uid];
+			let pseudo = enrol[uid];
+			if (typeof userInfos == 'object') {
+				pseudo = userInfos.pseudo;
+				if (userInfos.number>1) {
+					userInfos = userInfos.pseudo+" +"+(userInfos.number-1);
+				} else {
+					userInfos = userInfos.pseudo;
+				}
+			}
 			if (users && users[uid]) {
 				userInfos = users[uid].firstname+" "+users[uid].lastname+" "+users[uid].email+" "+users[uid].mobile;
+				if (typeof enrol[uid] == 'object' && enrol[uid].number>1) {
+					if (enrol[uid].number>1) {
+						userInfos += " +"+(enrol[uid].number-1);
+					}
+				}
 			}
-			let enroled = $("<span>").attr("data-toggle", "tooltip").attr("title", enrol[uid]).attr("id", "enrol-"+uid).addClass("label label-default")
+			let enroled = $("<span>").attr("data-toggle", "tooltip").attr("title", pseudo).attr("id", "enrol-"+uid).addClass("label label-default")
 				.append($("<span>").text(userInfos))
 				.append("&nbsp;")
-				.append($("<span>").attr("day", day).attr("stall", stall).attr("pseudo", enrol[uid]).attr("uid", uid).addClass("uid glyphicon glyphicon-remove"));
+				.append($("<span>").attr("day", day).attr("stall", stall).attr("pseudo", pseudo).attr("uid", uid).addClass("uid glyphicon glyphicon-remove"));
 			$("#edit-stall-already-enrols").append(enroled);
 		}
 
