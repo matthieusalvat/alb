@@ -54,7 +54,7 @@ $(function() {
 	});
 
 	$("#news").on("click", "button.delete", (e) => {
-		const id = $(e.target).attr("news");
+		const id = $(e.target).closest("button").attr("news");
 		bootbox.confirm("Voulez-vous vraiment supprimer cette actualité ?", result =>{
 			if (result) {
 				const removed=ref.child("kermesse").child("news").child(id).remove();
@@ -64,7 +64,7 @@ $(function() {
 	});
 	
 	$("#news").on("click", "button.edit", (e) => {
-		const id = $(e.target).attr("news");
+		const id = $(e.target).closest("button").attr("news");
 		if (news[id]) {
 			$("#edit-news-title").attr("news", id).val(news[id].title);
 			newsMDE.value(news[id].content);

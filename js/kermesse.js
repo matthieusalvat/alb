@@ -88,8 +88,8 @@ $(function() {
 	});
 
 	$("#planning").on("click", "button.enrol", (e) => {
-		const day = $(e.target).attr("day");
-		const stall = $(e.target).attr("stall");
+		const day = $(e.target).closest("button").attr("day");
+		const stall = $(e.target).closest("button").attr("stall");
 		const infos = planning[day][stall];
 		if (currentUser && currentUser.uid && currentProfile.pseudo) {
 			if (! infos.enrol || ! infos.enrol[currentUser.uid]) {
@@ -158,8 +158,8 @@ $(function() {
 	});
 
 	$("#planning").on("click", "button.edit", (e) => {
-		const day = $(e.target).attr("day");
-		const stall = $(e.target).attr("stall");
+		const day = $(e.target).closest("button").attr("day");
+		const stall = $(e.target).closest("button").attr("stall");
 		const infos = planning[day][stall];
 		
 		$("#edit-stall-error").hide();
@@ -223,8 +223,8 @@ $(function() {
 	
 
 	$("#planning").on("click", "button.delete", (e) => {
-		const day = $(e.target).attr("day");
-		const stall = $(e.target).attr("stall");
+		const day = $(e.target).closest("button").attr("day");
+		const stall = $(e.target).closest("button").attr("stall");
 		bootbox.confirm("Voulez-vous vraiment supprimer cette entrée ?", result =>{
 			if (result) {
 				const d=ref.child("kermesse").child("planning").child(day).child(stall).remove();
@@ -243,6 +243,8 @@ $(function() {
 		$("#edit-stall-start").val(14);
 		$("#edit-stall-end").val(18);
 		$("#edit-stall-description").val("");
+		$("#edit-stall-already-enrols").empty();
+
 		//stallMDE.value("");
 		$("#edit-stall").modal("show");
 	});
@@ -389,7 +391,7 @@ $(function() {
 	});
 	
 	$("#todo").on("click", "button.add", (e) => {
-		const group = $(e.target).attr("group");
+		const group = $(e.target).closest("button").attr("group");
 		$("#edit-todo-error").hide();
 		$("#edit-group-name").val(group).removeAttr("disabled");
 		$("#edit-action-name").val("").removeAttr("disabled");
@@ -401,8 +403,8 @@ $(function() {
 	});
 
 	$("#todo").on("click", "button.delete", (e) => {
-		const group = $(e.target).attr("group");
-		const action = $(e.target).attr("action");
+		const group = $(e.target).closest("button").attr("group");
+		const action = $(e.target).closest("button").attr("action");
 		bootbox.confirm("Voulez-vous vraiment supprimer cette action ?", result =>{
 			if (result) {
 				const d=ref.child("kermesse").child("todo").child(group).child(action).remove();
@@ -412,8 +414,8 @@ $(function() {
 	});
 	
 	$("#todo").on("click", "button.edit", (e) => {
-		const group = $(e.target).attr("group");
-		const action = $(e.target).attr("action");
+		const group = $(e.target).closest("button").attr("group");
+		const action = $(e.target).closest("button").attr("action");
 		
 		$("#edit-todo-error").hide();
 		$("#edit-group-name").val(group).attr("disabled", "disabled");

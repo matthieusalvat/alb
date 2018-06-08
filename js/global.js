@@ -368,7 +368,14 @@ $(function() {
 		ref.child("chat").child("benevoles").off("child_added");
 		ref.logout();
 	});
-	
+
+	$("#password").keypress(function (e) {
+		if (e.which == 13) {
+			$("#login-button").trigger("click");
+			return false;
+		}
+    });
+
 	$("#login-button").on("click", (e) => {
 		const email = $("#email").val();
 		const password = $("#password").val();
