@@ -221,7 +221,6 @@ $(function() {
 		
 	});
 	
-
 	$("#planning").on("click", "button.delete", (e) => {
 		const day = $(e.target).closest("button").attr("day");
 		const stall = $(e.target).closest("button").attr("stall");
@@ -238,11 +237,13 @@ $(function() {
 		$("#edit-stall-error").hide();
 
 		$("#edit-stall-name").attr("day", day).val("").removeAttr("disabled", "disabled");
+		$("#edit-stall-name").removeAttr("stall");
 		$("#edit-stall-where").val("");
 		$("#edit-stall-min").val(4);
 		$("#edit-stall-start").val(14);
 		$("#edit-stall-end").val(18);
 		$("#edit-stall-description").val("");
+		$("#edit-stall-force-enroled").val("");
 		$("#edit-stall-already-enrols").empty();
 
 		//stallMDE.value("");
