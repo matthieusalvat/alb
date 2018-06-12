@@ -12,6 +12,70 @@ $(function() {
 		todoMDE.codemirror.refresh();
 	});
 	*/
+
+	function exportPlanning() {
+		for (let day in planning) {
+			if ($("#planning-"+day).length) {
+				for (let stall in planning[day]) {
+					planning[day][stall].stall=stall;
+				}
+				const byHours = Object.values(planning[day]).sort((a,b) => {return parseInt(a.start) - parseInt(b.start)});
+				const table = $("<table");
+				for (let i =0; i<byHours.length;i++) {
+					const stall=byHours[i].stall;
+					//for (let stall in planning[day]) {
+					const infos = planning[day][stall];
+					const tr = $("<tr>");
+					const enrol = infos.enrol || {};
+					let customEnrol = (infos.customEnrol || "").split(/\n/);
+					customEnrol=customEnrol.filter(c=>c.match(/\w/));
+					let enroled = Object.keys(enrol).length+customEnrol.length;
+					let enroledText="";
+					Object.values(enrol).forEach((e) => {
+						if (typeof e == 'object') {
+							enroledText+='<br>'+e.pseudo;
+							if (e.number>1) {
+								enroled+=(e.number-1);
+								enroledText+="+"+(e.number-1);
+							}
+						} else {
+							enroledText+='<br>'+e;
+						}
+					});
+					if (customEnrol.length>0) {
+						customEnrol.forEach((c) => {
+							enroledText+="<br>"+c.split(/\s/)[0];
+						});
+						enroledText+="<br>+"+customEnrol.length;
+					}
+					
+					let bc, c;
+					c="black";
+					if (enroled < infos.min) {
+						bc="red";
+						if (enroled >= (infos.min/2)) {
+							bc="orange";
+						}
+					}else{
+						bc="green";
+					}
+					if (infos.min==0) {
+						bc="black"
+						c="white";
+					}
+					tr.css('background-color', bc);
+					tr.css('color', c);
+					tr.append($("<td>").text(stall));
+					tr.append($("<td>").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
+					tr.append($("<td>").text(infos.where));
+					tr.append($("<td>").text(infos.description).css("white-space", "pre"));
+					tr.append($("<td>").text(enroled+"/"+infos.min));
+					tr.append($("<td>").html(enroledText));
+					table.append(tr);
+				}
+			}
+		}
+	}
 	
 	ref.child("kermesse").child("planning").on("value", (snapshot) => {
 		planning = snapshot.val();
