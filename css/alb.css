@@ -20,6 +20,10 @@ h3 {
     border-bottom: 1px solid #555;
 }
 
+tr.active {
+	text-decoration: line-through;
+}
+
 #title {
 	margin: 0px;
 	width: 100%;

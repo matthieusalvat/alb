@@ -44,6 +44,11 @@ $(function() {
 						}
 					});
 					if (customEnrol.length>0) {
+						/*
+						customEnrol.forEach((c) => {
+							enroledText+="<br>"+c.split(/\s/)[0];
+						});
+						*/
 						enroledText+="<br>+"+customEnrol.length;
 					}
 
@@ -56,7 +61,9 @@ $(function() {
 					}else{
 						c="success";
 					}
-					
+					if (infos.min==0) {
+						c="active";
+					}
 					tr.addClass(c);
 					tr.append($("<td>").text(stall));
 					tr.append($("<td>").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
