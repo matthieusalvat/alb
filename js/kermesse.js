@@ -12,15 +12,32 @@ $(function() {
 		todoMDE.codemirror.refresh();
 	});
 	*/
+	const clipboard = new ClipboardJS('#clipboard');
+	clipboard.on('success', function(e) {
+		$('#clipboard').popover('show');
+		setTimeout(function() {$('#clipboard').popover('hide')}, 2000);
+		e.clearSelection();
+	});
+	
+	$("#export-planning").on("click", (e) => {
+		exportPlanning();
+		$("#export-modal").modal("show");
+	});
 
-	function exportPlanning() {
+	$("#export-detailed-planning").on("click", (e) => {
+		exportPlanning(true);
+		$("#export-modal").modal("show");
+	});
+	
+	function exportPlanning(withDetail) {
+		$("#export-div").empty();
 		for (let day in planning) {
 			if ($("#planning-"+day).length) {
 				for (let stall in planning[day]) {
 					planning[day][stall].stall=stall;
 				}
+				const table = $("<table>");
 				const byHours = Object.values(planning[day]).sort((a,b) => {return parseInt(a.start) - parseInt(b.start)});
-				const table = $("<table");
 				for (let i =0; i<byHours.length;i++) {
 					const stall=byHours[i].stall;
 					//for (let stall in planning[day]) {
@@ -31,9 +48,15 @@ $(function() {
 					customEnrol=customEnrol.filter(c=>c.match(/\w/));
 					let enroled = Object.keys(enrol).length+customEnrol.length;
 					let enroledText="";
-					Object.values(enrol).forEach((e) => {
+					for (uid in enrol) {
+						const e=enrol[uid];
 						if (typeof e == 'object') {
-							enroledText+='<br>'+e.pseudo;
+							if (withDetail && users && users[uid]) {
+								userInfos = users[uid].firstname+" "+users[uid].lastname+" "+users[uid].email+" "+users[uid].mobile;
+								enroledText+='<br>'+userInfos;
+							} else {
+								enroledText+='<br>'+e.pseudo;
+							}
 							if (e.number>1) {
 								enroled+=(e.number-1);
 								enroledText+="+"+(e.number-1);
@@ -41,38 +64,46 @@ $(function() {
 						} else {
 							enroledText+='<br>'+e;
 						}
-					});
+					}
 					if (customEnrol.length>0) {
 						customEnrol.forEach((c) => {
-							enroledText+="<br>"+c.split(/\s/)[0];
+							if (withDetail) {
+								enroledText+="<br>"+c;
+							} else {
+								enroledText+="<br>"+c.split(/\s/)[0];
+							}
 						});
-						enroledText+="<br>+"+customEnrol.length;
+						//enroledText+="<br>+"+customEnrol.length;
 					}
 					
 					let bc, c;
 					c="black";
 					if (enroled < infos.min) {
-						bc="red";
+						bc="#fb8888";
 						if (enroled >= (infos.min/2)) {
-							bc="orange";
+							bc="#ffbd43";
 						}
 					}else{
-						bc="green";
+						bc="#d6ffd6";
 					}
 					if (infos.min==0) {
-						bc="black"
+						bc="#7d7c7c"
 						c="white";
 					}
 					tr.css('background-color', bc);
 					tr.css('color', c);
-					tr.append($("<td>").text(stall));
-					tr.append($("<td>").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
-					tr.append($("<td>").text(infos.where));
-					tr.append($("<td>").text(infos.description).css("white-space", "pre"));
-					tr.append($("<td>").text(enroled+"/"+infos.min));
-					tr.append($("<td>").html(enroledText));
-					table.append(tr);
+					tr.append($("<td>").css("border", "1px solid black").text(stall));
+					tr.append($("<td>").css("border", "1px solid black").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
+					tr.append($("<td>").css("border", "1px solid black").text(infos.where));
+					tr.append($("<td>").css("border", "1px solid black").text(infos.description).css("white-space", "pre-wrap"));
+					tr.append($("<td>").css("border", "1px solid black").text(enroled+"/"+infos.min));
+					tr.append($("<td>").css("border", "1px solid black").css('max-width', '100%').html(enroledText));
+					table.addClass("export-table").append(tr);
 				}
+				$("#export-div .modal")
+				$("#export-div").prepend(table);
+				$("#export-div").prepend($("<h2>").text(day));
+
 			}
 		}
 	}
@@ -132,7 +163,7 @@ $(function() {
 					tr.append($("<td>").text(stall));
 					tr.append($("<td>").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
 					tr.append($("<td>").text(infos.where));
-					tr.append($("<td>").text(infos.description).css("white-space", "pre"));
+					tr.append($("<td>").text(infos.description).css("white-space", "pre-wrap"));
 					tr.append($("<td>").text(enroled+"/"+infos.min));
 					
 					tr.append($("<td>").html(enroledText));

@@ -23,10 +23,33 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/showdown/1.8.5/showdown.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.fr.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+	
 	<script src="../js/global.js"></script>
 	<script src="../js/kermesse.js"></script>
   </head>
   <body>
+	<div class="modal fade" id="export-modal">
+	  <div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h4 class="modal-title">
+			  Export des inscriptions
+			</h4>
+		  </div>
+		  <div class="modal-body">
+			<button class="btn btn-default" data-clipboard-target="#export-div" id="clipboard" data-content="Coller (CTRL+V) les informations dans un document" data-toggle="popover" >Copier dans le presse-papier</button>
+			<table id="export-div">
+			</table>
+		  </div>
+		  <div class="modal-footer">
+		  </div>
+		</div>
+	  </div>
+	</div>
 	<div class="modal fade" id="log-modal">
 	  <div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
@@ -359,6 +382,9 @@
 	  <p>Comment fonctionne la colonne "Inscrits" : les "noms" affichés sont les pseudos des personnes ayant un compte sur le site et s'étant inscrit tout seul ou à plusieurs (+N derrière les pseudos), les <b>+N</b> en bas de chaque entrée correspondent au nombre de personnes qu'un membre de l'association a saisi manuellement (principalement les retours des inscriptions papiers).</p>
 
 	  <p>N'hésitez pas à vous inscrire sur les stands ayant déjà le nombre requis de personnes. Si vous êtes assez nombreux on pourra faire deux créneaux pour chaque stand.</p>
+
+	  <button class="connected admin btn btn-default" id="export-detailed-planning">Export complet</button>
+	  <button class="connected admin btn btn-default" id="export-planning">Export simple</button>
 	  
 	  <div id="planning">
 		
