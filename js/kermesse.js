@@ -36,7 +36,7 @@ $(function() {
 				for (let stall in planning[day]) {
 					planning[day][stall].stall=stall;
 				}
-				const table = $("<table>");
+				const table = $("<table>").css('border-collapse', 'collapse');
 				const byHours = Object.values(planning[day]).sort((a,b) => {return parseInt(a.start) - parseInt(b.start)});
 				for (let i =0; i<byHours.length;i++) {
 					const stall=byHours[i].stall;
