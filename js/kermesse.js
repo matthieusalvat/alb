@@ -118,7 +118,7 @@ $(function() {
 					tr.append($("<td>").css("border", "1px solid black").text(stall));
 					tr.append($("<td>").css("border", "1px solid black").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
 					tr.append($("<td>").css("border", "1px solid black").text(infos.where));
-					tr.append($("<td>").css("border", "1px solid black").text(infos.description).css("white-space", "pre-wrap"));
+					tr.append($("<td>").css("border", "1px solid black").text(infos.description).css("white-space", "pre-line"));
 					tr.append($("<td>").css("border", "1px solid black").text(enroled+"/"+infos.min));
 					tr.append($("<td>").css("border", "1px solid black").css('max-width', '100%').html(enroledText));
 					table.addClass("export-table").append(tr);
@@ -186,7 +186,7 @@ $(function() {
 					tr.append($("<td>").text(stall));
 					tr.append($("<td>").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
 					tr.append($("<td>").text(infos.where));
-					tr.append($("<td>").text(infos.description).css("white-space", "pre-wrap"));
+					tr.append($("<td>").text(infos.description).css("white-space", "pre-line"));
 					tr.append($("<td>").text(enroled+"/"+infos.min));
 					
 					tr.append($("<td>").html(enroledText));
@@ -448,7 +448,7 @@ $(function() {
 				};
 				tr.append($("<td>").text(action).addClass(c));
 				tr.append($("<td>").text(infos.who).addClass(c));
-				tr.append($("<td>").text(infos.progression).css("white-space", "pre").addClass(c));
+				tr.append($("<td>").text(infos.progression).css("white-space", "pre-line").addClass(c));
 				tr.append($("<td>")
 						  .append($("<button>").attr("title", "Modifier l'action").addClass("edit connected admin btn btn-default btn-xs btn-warning").attr("group", group).attr("action",action).append($("<span>").addClass("glyphicon glyphicon-edit"))).addClass(c)
 						  .append("&nbsp;")
