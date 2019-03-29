@@ -6,7 +6,8 @@ $.urlParam = function(name){
 		return decodeURIComponent(results[1]) || 0;
     }
 }
-const ref = new Webcom("https://io.datasync.orange.com/base/alb");
+// const ref = new Webcom("https://io.datasync.orange.com/base/alb");
+const ref = new Webcom("http://localhost:8000/base/alb");
 let news={};
 let currentUser;
 let currentProfile;

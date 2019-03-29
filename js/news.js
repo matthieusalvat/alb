@@ -4,14 +4,14 @@ $(function() {
 		newsMDE.codemirror.refresh();
 	});
 	const mdConverter = new showdown.Converter();
-		ref.child("kermesse").child("news").on("child_removed", (snapshot) => {
+		ref.child("news").on("child_removed", (snapshot) => {
 		const id = snapshot.name();
 		$("#"+id).remove();
 		delete news[id];
 		checkConnected();
 	});
 
-	ref.child("kermesse").child("news").on("child_changed", (snapshot) => {
+	ref.child("news").on("child_changed", (snapshot) => {
 		const infos = snapshot.val();
 		const id = snapshot.name();
 		$("#"+id+" header>span").text(infos.title);
@@ -23,7 +23,7 @@ $(function() {
 		checkConnected();
 	});
 
-	ref.child("kermesse").child("news").on("child_added", (snapshot) => {
+	ref.child("news").on("child_added", (snapshot) => {
 		const infos = snapshot.val();
 		const id = snapshot.name();
 		news[id]=infos;
@@ -57,7 +57,7 @@ $(function() {
 		const id = $(e.target).closest("button").attr("news");
 		bootbox.confirm("Voulez-vous vraiment supprimer cette actualité ?", result =>{
 			if (result) {
-				const removed=ref.child("kermesse").child("news").child(id).remove();
+				const removed=ref.child("news").child(id).remove();
 				logAction("news", "remove", removed.val().title, removed);
 			}
 		});
@@ -102,7 +102,7 @@ $(function() {
 				}
 			};
 			if (oldId && news[oldId]) {
-				ref.child("kermesse").child("news").child(oldId).update(
+				ref.child("news").child(oldId).update(
 					data, (error) => {
 						if (error) {
 							$("#edit-news-error").text(error).show();
@@ -112,7 +112,7 @@ $(function() {
 						}
 					});
 			} else {
-				const id=ref.child("kermesse").child("news").push(
+				const id=ref.child("news").push(
 					data, (error) => {
 						if (error) {
 							$("#edit-news-error").text(error).show();

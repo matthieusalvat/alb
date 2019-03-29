@@ -1,6 +1,21 @@
 $(function() {
 	let todos;
 	let planning;
+	const hash = location.hash;
+	let year = new Date().getFullYear();
+	if ($.urlParam("y")) {
+		year = $.urlParam("y");
+	}
+	$("#year").text(year);
+	$(".yearRef").each((i, e) => {
+		console.log(e);
+		if ($(e).attr("src")) {
+			$(e).attr("src", $(e).attr("src").replace("-YYYY", "-"+year));
+		}
+		if ($(e).attr("href")) {
+			$(e).attr("href", $(e).attr("href").replace("-YYYY", "-"+year));
+		}
+	});
 	/*
 	const stallMDE = new SimpleMDE({ element: $("#edit-stall-description")[0], spellChecker: false });
 	$("#edit-stall").on('shown.bs.modal', () => {
@@ -19,11 +34,20 @@ $(function() {
 		e.clearSelection();
 	});
 	
+	$("#view-previous-year").on("click", (e) => {
+		window.location="./?y="+(year-1);
+	});
+
+	$("#view-current-year").on("click", (e) => {
+		window.location="./?y="+new Date().getFullYear();
+	});
+
 	$("#export-planning").on("click", (e) => {
 		exportPlanning();
 		$("#export-modal").modal("show");
 	});
 
+	
 	$("#export-detailed-planning").on("click", (e) => {
 		exportPlanning(true);
 		$("#export-modal").modal("show");
@@ -108,7 +132,7 @@ $(function() {
 		}
 	}
 	
-	ref.child("kermesse").child("planning").on("value", (snapshot) => {
+	ref.child("kermesse").child(year).child("planning").on("value", (snapshot) => {
 		planning = snapshot.val();
 		for (let day in planning) {
 			if ($("#planning-"+day).length) {
@@ -226,7 +250,7 @@ $(function() {
 					],
 					callback: result => {
 						if (result) {
-							ref.child("kermesse").child("planning").child(day).child(stall).child("enrol").child(currentUser.uid).set(
+							ref.child("kermesse").child(year).child("planning").child(day).child(stall).child("enrol").child(currentUser.uid).set(
 								{
 									'pseudo': currentProfile.pseudo,
 									'number': result,
@@ -245,7 +269,7 @@ $(function() {
 			} else {
 				bootbox.confirm("Voulez-vous vraiment vous désinscrire pour le "+day+" de "+infos.start+"h à "+infos.end+"h ?", result =>{
 					if (result) {
-						ref.child("kermesse").child("planning").child(day).child(stall).child("enrol").child(currentUser.uid).remove(
+						ref.child("kermesse").child(year).child("planning").child(day).child(stall).child("enrol").child(currentUser.uid).remove(
 							(error)=>{
 								if (error) {
 									alert(error);
@@ -312,7 +336,7 @@ $(function() {
 		const stall = $(e.target).attr("stall");
 		bootbox.confirm("Voulez-vous vraiment désinscrire "+pseudo+" ?", result =>{
 			if (result) {
-				ref.child("kermesse").child("planning").child(day).child(stall).child("enrol").child(uid).remove((error)=>{
+				ref.child("kermesse").child(year).child("planning").child(day).child(stall).child("enrol").child(uid).remove((error)=>{
 					if (!error) {
 						logAction("planning", "unsubscribe", day+":"+stall+":"+pseudo, {uid: uid});
 						$("#enrol-"+uid).remove();
@@ -328,7 +352,7 @@ $(function() {
 		const stall = $(e.target).closest("button").attr("stall");
 		bootbox.confirm("Voulez-vous vraiment supprimer cette entrée ?", result =>{
 			if (result) {
-				const d=ref.child("kermesse").child("planning").child(day).child(stall).remove();
+				const d=ref.child("kermesse").child(year).child("planning").child(day).child(stall).remove();
 				logAction("planning", "remove", day+":"+stall, d);
 			}
 		});
@@ -375,12 +399,12 @@ $(function() {
 			if (planning[day][originalStall] && originalStall != stall) {
 				//console.log("rename", originalStall, stall);
 				enrol=planning[day][originalStall].enrol || {};
-				const d=ref.child("kermesse").child("planning").child(day).child(originalStall).remove();
+				const d=ref.child("kermesse").child(year).child("planning").child(day).child(originalStall).remove();
 				logAction("planning", "remove", day+":"+stall, d);
 			}
 			infos.enrol = enrol;
 			//console.log(infos);
-			ref.child("kermesse").child("planning").child(day).child(stall).set(
+			ref.child("kermesse").child(year).child("planning").child(day).child(stall).set(
 				infos,
 				(error) => {
 					if (error) {
@@ -398,7 +422,7 @@ $(function() {
 		}
 	});
 	
-	ref.child("kermesse").child("todo").on("value", (snapshot) => {
+	ref.child("kermesse").child(year).child("todo").on("value", (snapshot) => {
 		todos = snapshot.val();
 		$("#todo").empty();
 		let total_actions = 0;
@@ -458,7 +482,7 @@ $(function() {
 			
 			if (originalAction && todos[group][originalAction] && originalAction != action) {
 				//console.log("rename", originalAction, action);
-				const d = ref.child("kermesse").child("todo").child(group).child(originalAction).remove();
+				const d = ref.child("kermesse").child(year).child("todo").child(group).child(originalAction).remove();
 				logAction("todo", "remove", group+":"+originalAction, d);
 			}
 			const data = {
@@ -466,7 +490,7 @@ $(function() {
 				done: done,
 				who: who
 			};
-			ref.child("kermesse").child("todo").child(group).child(action).set(
+			ref.child("kermesse").child(year).child("todo").child(group).child(action).set(
 				data,
 				(error) => {
 					if (error) {
@@ -510,7 +534,7 @@ $(function() {
 		const action = $(e.target).closest("button").attr("action");
 		bootbox.confirm("Voulez-vous vraiment supprimer cette action ?", result =>{
 			if (result) {
-				const d=ref.child("kermesse").child("todo").child(group).child(action).remove();
+				const d=ref.child("kermesse").child(year).child("todo").child(group).child(action).remove();
 				logAction("todo", "remove", group+":"+action, d);
 			}
 		});

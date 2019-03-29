@@ -349,7 +349,7 @@
       </div>
     </nav>
 	<div id="title">
-	  <h1>Préparation de la kermesse <img src="../img/alb.png"/></h1>
+	  <h1>Préparation de la kermesse <img src="../img/alb.png"/><br><span id="year"></span></h1>
 	</div>
 	<div class="container-fluid" role="main">
 	  <table>
@@ -361,7 +361,7 @@
 
 			<p>Pour vous connecter, vous pouvez cliquer sur le bouton <button type="button" class="btn btn-default login" title="Se connecter"><span class="glyphicon glyphicon-log-in"></span></button> disponible en haut à droite de cette page ou sur le bouton suivant <button class="btn btn-default btn-primary login">Je veux participer</button></p>
 			
-			<p>Nous avons sollicité les commerçants de Bégard afin d'avoir des lots pour notre kermesse. Si vous voulez demander des lots à des commerçants d'autres villes que vous connaissez (Guingamp, Lannion ...) vous pouvez télécharger <a target="_blank" href="../img/solicitation_commercant-pdfjam.pdf">l'attestation de don de lots</a> et nous <a href="mailto:contact@al-begard.org?subject=[ALB] Récupération de lots pour la kermesse">contacter à l'adresse contact@al-begard.org</a> pour que l'on puisse récupérer les lots récoltés. Vous pouvez aussi déposer les lots dans les écoles.</p>
+			<p>Nous avons sollicité les commerçants de Bégard afin d'avoir des lots pour notre kermesse. Si vous voulez demander des lots à des commerçants d'autres villes que vous connaissez (Guingamp, Lannion ...) vous pouvez télécharger <a class="yearRef" target="_blank" href="../img/solicitation_commercant-YYYY.pdf">l'attestation de don de lots</a> et nous <a href="mailto:contact@al-begard.org?subject=[ALB] Récupération de lots pour la kermesse">contacter à l'adresse contact@al-begard.org</a> pour que l'on puisse récupérer les lots récoltés. Vous pouvez aussi déposer les lots dans les écoles.</p>
 			
 			<p>Ce site a été réalisé pour fonctionner sur des versions récentes de <a href="https://www.google.fr/chrome/index.html" target="_blank">Chrome</a> ou <a href="https://www.mozilla.org/fr/firefox/" target="_blank">Firefox</a>.</p>
 
@@ -369,10 +369,14 @@
 			
 		  </td>
 		  <td>
-			<a href="../img/affiche.pdf"><img src="../img/affiche.png" height="300px"/></a>
+			<a class="yearRef" target="_blank" href="../img/affiche-YYYY.pdf"><img class="yearRef" src="../img/affiche-YYYY.png" height="300px"/></a>
 		  </td>
 		</tr>
 	  </table>
+
+	  <button class="connected admin btn btn-default" id="view-current-year">Voir année courante</button>
+	  <button class="connected admin btn btn-default" id="view-previous-year">Voir année précedente</button>
+
 	  
 	  <h2 class="alert alert-info">Inscription des bénévoles</h2>
 	  <p>C'est ici que vous pouvez vous inscrire pour nous aider à organiser la kermesse.</p>
@@ -388,7 +392,7 @@
 	  
 	  <div id="planning">
 		
-		<h3>Pour le samedi 16 juin <button day="samedi" class="connected admin add-stall btn btn-default btn-primary"><span class="glyphicon glyphicon-plus"></span></button></h3>
+		<h3>Pour le samedi <button day="samedi" class="connected admin add-stall btn btn-default btn-primary"><span class="glyphicon glyphicon-plus"></span></button></h3>
 		
 		<table class="table table-bordered" width="100%" cellspacing="0">
 		  <thead>
@@ -406,7 +410,7 @@
 		  </tbody>
 		</table>
 		
-		<h3>Pour le dimanche 17 juin <button day="dimanche" class="connected admin add-stall btn btn-default btn-primary"><span class="glyphicon glyphicon-plus"></span></button></h3>
+		<h3>Pour le dimanche <button day="dimanche" class="connected admin add-stall btn btn-default btn-primary"><span class="glyphicon glyphicon-plus"></span></button></h3>
 		
 		<table class="table table-bordered" width="100%" cellspacing="0">
 		  <thead>
