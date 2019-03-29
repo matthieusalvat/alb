@@ -8,7 +8,6 @@ $(function() {
 	}
 	$("#year").text(year);
 	$(".yearRef").each((i, e) => {
-		console.log(e);
 		if ($(e).attr("src")) {
 			$(e).attr("src", $(e).attr("src").replace("-YYYY", "-"+year));
 		}
