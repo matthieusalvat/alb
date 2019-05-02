@@ -119,6 +119,10 @@
 			<form id="profile">
 			  <p>Merci de renseigner votre profil afin que l'on puisse vous contacter facilement en cas de besoin.</p>
 			  <div class="form-group">
+				<label for="firstname">e-mail</label>
+				<input type="text" class="form-control" name="profileEmail" readonly id="profileEmail" placeholder="Votre e-mail"/>
+			  </div>
+			  <div class="form-group">
 				<label for="firstname">Prénom</label>
 				<input type="text" class="form-control" name="firstname" id="firstname" placeholder="Votre prénom"/>
 			  </div>
@@ -195,8 +199,14 @@
 			<h4 class="modal-title">Se connecter</h4>
 		  </div>
 		  <div class="modal-body">
+			<form id="oidc">
+			  <p>Se connecter avec votre compte Google ou Facebook.</p>
+			  <button type="button" id="google" class="not-connected" title="utiliser mon compte google"><i class="fa fa-google fa-2x" ></i></button>
+			  <button type="button" id="facebook" class="not-connected" title="utiliser mon compte facebook"><i class="fa fa-facebook-official fa-2x" ></i></button>
+			</form>
+			<hr/>
 			<form id="login">
-			  <p>Veuillez renseigner votre e-mail et votre mot de passe.</p>
+			  <p>Se connecter via e-mail/mot de passe.</p>
 			  <div class="form-group">
 				<label for="email">E-mail</label>
 				<input type="text" class="form-control" name="email" id="email" placeholder="Votre e-mail"/>
@@ -264,7 +274,7 @@
 		<p>La page de gestion de la kermesse se trouve sur <a href="./kermesse">http://al-begard.org/kermesse</a>.</p>
 
 		<p>N'hésitez pas à partager l'affiche : </p>
-		<a href="img/affiche.pdf"><img src="img//affiche.png" /></a>
+		<a href="img/affiche.pdf"><img src="img//affiche-2018.png" /></a>
 	  </article>
 	  <article>
 		<header>Carte de voeux 2018</header>

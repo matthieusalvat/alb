@@ -219,6 +219,10 @@
 			<form id="profile">
 			  <p>Merci de renseigner votre profil afin que l'on puisse vous contacter facilement en cas de besoin.</p>
 			  <div class="form-group">
+				<label for="firstname">e-mail</label>
+				<input type="text" class="form-control" name="profileEmail" readonly id="profileEmail" placeholder="Votre e-mail"/>
+			  </div>
+			  <div class="form-group">
 				<label for="firstname">Prénom</label>
 				<input type="text" class="form-control" name="firstname" id="firstname" placeholder="Votre prénom"/>
 			  </div>
@@ -230,6 +234,7 @@
 				<label for="pseudo">Pseudo (seul champ visible par les autres utilisateurs du site)</label>
 				<input type="text" class="form-control" name="pseudo" id="pseudo" placeholder="Votre pseudo, votre prénom c'est très bien par exemple"/>
 			  </div>
+			  
 			  <div class="form-group">
 				<label for="mobile">Téléphone portable</label>
 				<input type="tel" class="form-control" id="mobile" placeholder="Votre numéro de téléphone portable"/>
@@ -294,8 +299,14 @@
 			<h4 class="modal-title">Se connecter</h4>
 		  </div>
 		  <div class="modal-body">
+			<form id="oidc">
+			  <p>Se connecter avec votre compte Google ou Facebook.</p>
+			  <button type="button" id="google" class="not-connected" title="utiliser mon compte google"><i class="fa fa-google fa-2x" ></i></button>
+			  <button type="button" id="facebook" class="not-connected" title="utiliser mon compte facebook"><i class="fa fa-facebook-official fa-2x" ></i></button>
+			</form>
+			<hr/>
 			<form id="login">
-			  <p>Veuillez renseigner votre e-mail et votre mot de passe.</p>
+			  <p>Se connecter via e-mail/mot de passe.</p>
 			  <div class="form-group">
 				<label for="email">E-mail</label>
 				<input type="text" class="form-control" name="email" id="email" placeholder="Votre e-mail"/>

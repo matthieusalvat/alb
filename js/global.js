@@ -173,7 +173,7 @@ function addChat() {
 function checkConnected() {
 	//console.log("checkConnected", currentUser, currentProfile);
 	if (currentUser) {
-		$(".pseudo").text(currentProfile? currentProfile.pseudo : currentUser.providerUid);
+		$(".pseudo").text(currentProfile? currentProfile.pseudo : currentUser.displayName);
 		$(".not-connected").hide();
 		$(".connected").show();
 		if (currentProfile && currentProfile.email.substr(-14) == '@al-begard.org') {
@@ -190,7 +190,7 @@ function checkConnected() {
 }
 
 function checkAuth(error, user) {
-	//console.log("checkAuth", error, user);
+	console.log("checkAuth", error, user);
 	if (error) {
 		currentUser=null;
 		users=null;
@@ -198,7 +198,7 @@ function checkAuth(error, user) {
 		console.log("auth error: " + error);
 	} else {
 		if (user) {
-			//console.log("user", user);
+			console.log("user", user);
 			currentUser=user;
 			checkConnected();
 			$(".not-connected").hide();
@@ -215,10 +215,20 @@ function checkAuth(error, user) {
 			ref.child("users").child(user.uid).once("value", (snapshot) => {
 				currentProfile=snapshot.val();
 				if (!currentProfile) {
-					if (currentUser.providerUid.substr(-14) == '@al-begard.org') {
-						let pseudo=currentUser.providerUid.replace('@al-begard.org', '');
-						$("#pseudo").val(pseudo.charAt(0).toUpperCase() + pseudo.slice(1));
-						$("#firstname").val(pseudo.charAt(0).toUpperCase() + pseudo.slice(1));
+					if (currentUser.provider == 'google') {
+						console.log("google profile", user);
+						currentUser.providerUid=currentUser.providerProfile.email;
+						$("#pseudo").val(currentUser.displayName);
+						$("#firstname").val(currentUser.providerProfile.given_name);
+						$("#lastname").val(currentUser.providerProfile.family_name);
+						$("#profileEmail").val(currentUser.providerProfile.email);
+					}else if (currentUser.provider == 'password') {
+						$("#profileEmail").val(currentUser.providerUid);
+						if (currentUser.providerUid.substr(-14) == '@al-begard.org') {
+							let pseudo=currentUser.providerUid.replace('@al-begard.org', '');
+							$("#pseudo").val(pseudo.charAt(0).toUpperCase() + pseudo.slice(1));
+							$("#firstname").val(pseudo.charAt(0).toUpperCase() + pseudo.slice(1));
+						}
 					}
 					$("#login-modal").modal("hide");
 					$("#profile-modal").modal("show");
@@ -337,6 +347,7 @@ $(function() {
 		//console.log("profile", currentProfile);
 		if (currentProfile) {
 			$("#firstname").val(currentProfile.firstname);
+			$("#profileEmail").val(currentProfile.email);
 			$("#activity").val(currentProfile.activity);
 			$("#lastname").val(currentProfile.lastname);
 			$("#pseudo").attr("old", currentProfile.pseudo).val(currentProfile.pseudo);
@@ -376,6 +387,9 @@ $(function() {
 		}
     });
 
+	$("#google").on("click", () => ref.authWithOAuth("google"));
+	$("#facebook").on("click", () => ref.authWithOAuth("facebook"));
+	
 	$("#login-button").on("click", (e) => {
 		const email = $("#email").val();
 		const password = $("#password").val();
@@ -400,6 +414,7 @@ $(function() {
 		const lastname = $("#lastname").val();
 		const pseudo = $("#pseudo").val();
 		const activity = $("#activity").val();
+		const email = $("#profileEmail").val();
 		const oldPseudo = $("#pseudo").attr("old");
 		let mobile = $("#mobile").val();
 		if (mobile) {
@@ -421,11 +436,13 @@ $(function() {
 					ref.child("pseudos").child(oldPseudo).remove();
 				}
 				ref.child("pseudos").child(pseudo).set(currentUser.uid);
-				const profile = { firstname, lastname, pseudo, mobile, activity, email: currentUser.providerUid };
+				const profile = { firstname, lastname, pseudo, mobile, activity, email, provider:  currentUser.provider};
+				console.log(profile);
 				ref.child("users").child(currentUser.uid).update(
 					profile,
 					(error) => {
 						if (error) {
+							console.log(error);
 							$("#profile-error").text("error").show();
 						} else {
 							currentProfile=profile;
