@@ -190,7 +190,6 @@ function checkConnected() {
 }
 
 function checkAuth(error, user) {
-	console.log("checkAuth", error, user);
 	if (error) {
 		currentUser=null;
 		users=null;
@@ -198,7 +197,6 @@ function checkAuth(error, user) {
 		console.log("auth error: " + error);
 	} else {
 		if (user) {
-			console.log("user", user);
 			currentUser=user;
 			checkConnected();
 			$(".not-connected").hide();
@@ -216,13 +214,18 @@ function checkAuth(error, user) {
 				currentProfile=snapshot.val();
 				if (!currentProfile) {
 					if (currentUser.provider == 'google') {
-						console.log("google profile", user);
 						currentUser.providerUid=currentUser.providerProfile.email;
 						$("#pseudo").val(currentUser.displayName);
 						$("#firstname").val(currentUser.providerProfile.given_name);
 						$("#lastname").val(currentUser.providerProfile.family_name);
 						$("#profileEmail").val(currentUser.providerProfile.email);
-					}else if (currentUser.provider == 'password') {
+					} else if (currentUser.provider == 'facebook') {
+						currentUser.providerUid=currentUser.providerProfile.email;
+						$("#pseudo").val(currentUser.displayName);
+						$("#firstname").val(currentUser.providerProfile.first_name);
+						$("#lastname").val(currentUser.providerProfile.last_name);
+						$("#profileEmail").val(currentUser.providerProfile.email);
+					} else if (currentUser.provider == 'password') {
 						$("#profileEmail").val(currentUser.providerUid);
 						if (currentUser.providerUid.substr(-14) == '@al-begard.org') {
 							let pseudo=currentUser.providerUid.replace('@al-begard.org', '');
