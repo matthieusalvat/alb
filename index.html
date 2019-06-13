@@ -189,6 +189,33 @@
 		</div>
 	  </div>
 	</div>
+	<div class="modal fade" id="password-lost-modal">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h4 class="modal-title">Réinitialiser mon mot de passe</h4>
+		  </div>
+		  <div class="modal-body">
+			<form id="register">
+			  <p>Veuillez renseigner votre adresse e-mail. Vous recevez un e-mail vous permettant de réinitialiser votre mot de passe.</p>
+			  <div class="form-group">
+				<label for="password-lost-email">E-mail</label>
+				<input type="text" class="form-control" name="email" id="password-lost-email" placeholder="Votre e-mail"/>
+			  </div>
+			  <div class="alert alert-danger" style="display:none" id="password-lost-error"></div>
+			  <div class="alert alert-success" style="display:none" id="password-lost-info"></div>
+			</form>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+			<button type="button" class="btn btn-primary" id="password-lost-button">Valider</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
 	<div class="modal fade" id="login-modal">
 	  <div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -252,9 +279,9 @@
 		  <ul class="nav navbar-nav navbar-right">
 			<li><p class="navbar-text connected" style="display: none">Bienvenue <span class="pseudo"></span></p></li>
 			<!-- <p id="user" class="navbar-text"></p></li> -->
-			<li><button type="button" class="btn btn-default navbar-btn profile connected" title="Modifier mon profil" style="display:none"><span class="glyphicon glyphicon-user"></span></button></li>
+			<li><button type="button" class="btn btn-default navbar-btn profile connected" title="Modifier mon profil" style="display:none"><span class="glyphicon glyphicon-user"></span><span class="provider"></span></button></li>
 			<li><button type="button" class="btn btn-default navbar-btn login not-connected" title="Se connecter" style="display:none"><span class="glyphicon glyphicon-log-in"></span></button></li>
-			<li><button type="button" class="btn btn-default navbar-btn logout connected" title="Se déconnecter" style="display:none"><span class="glyphicon glyphicon-log-out"></span></button></li>
+			<li><button type="button" id="disconnect" class="btn btn-default navbar-btn logout connected" title="Se déconnecter" style="display:none"><span class="glyphicon glyphicon-log-out"></span></button></li>
 			<li><button type="button" class="btn btn-default navbar-btn register not-connected" title="Se créer un compte" style="display:none"><span class="glyphicon glyphicon-plus-sign"></span></button></li>
 		  </ul>
 		</div>

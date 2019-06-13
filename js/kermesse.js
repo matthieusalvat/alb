@@ -51,9 +51,18 @@ $(function() {
 		exportPlanning(true);
 		$("#export-modal").modal("show");
 	});
+
+	function extractPhoneNumber(line) {
+		let number=null;
+		if (m=line.match(/(\d\d[.-\s]?){5}/)) {
+			number=m[0].replace(/[^\d]*/g, "");
+		}
+		return number;
+	}
 	
 	function exportPlanning(withDetail) {
 		$("#export-div").empty();
+		phoneNumbers={};
 		for (let day in planning) {
 			if ($("#planning-"+day).length) {
 				for (let stall in planning[day]) {
@@ -69,6 +78,16 @@ $(function() {
 					const enrol = infos.enrol || {};
 					let customEnrol = (infos.customEnrol || "").split(/\n/);
 					customEnrol=customEnrol.filter(c=>c.match(/\w/));
+					customEnrol.forEach(c=> {
+						let number=extractPhoneNumber(c);
+						if (number) {
+							if (! phoneNumbers[day+" "+infos.start+"-"+infos.end]) {
+								phoneNumbers[day+" "+infos.start+"-"+infos.end]=[];
+							}
+							phoneNumbers[day+" "+infos.start+"-"+infos.end].push(number)
+							
+						}
+					});
 					let enroled = Object.keys(enrol).length+customEnrol.length;
 					let enroledText="";
 					for (uid in enrol) {
@@ -76,6 +95,13 @@ $(function() {
 						if (typeof e == 'object') {
 							if (withDetail && users && users[uid]) {
 								userInfos = users[uid].firstname+" "+users[uid].lastname+" "+users[uid].email+" "+users[uid].mobile;
+								if (users[uid].mobile) {
+									number=users[uid].mobile.replace(/[^\d]*/g, "");
+									if (! phoneNumbers[day+" "+infos.start+"-"+infos.end]) {
+										phoneNumbers[day+" "+infos.start+"-"+infos.end]=[];
+									}
+									phoneNumbers[day+" "+infos.start+"-"+infos.end].push(number)
+								}
 								enroledText+='<br>'+userInfos;
 							} else {
 								enroledText+='<br>'+e.pseudo;
@@ -117,8 +143,7 @@ $(function() {
 					tr.css('color', c);
 					tr.append($("<td>").css("border", "1px solid black").text(stall));
 					tr.append($("<td>").css("border", "1px solid black").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
-					tr.append($("<td>").css("border", "1px solid black").text(infos.where));
-					tr.append($("<td>").css("border", "1px solid black").text(infos.description).css("white-space", "pre-line"));
+					tr.append($("<td>").css("border", "1px solid black").html(infos.description.replace(/\n/g, '<br/>')));
 					tr.append($("<td>").css("border", "1px solid black").text(enroled+"/"+infos.min));
 					tr.append($("<td>").css("border", "1px solid black").css('max-width', '100%').html(enroledText));
 					table.addClass("export-table").append(tr);
@@ -126,8 +151,20 @@ $(function() {
 				$("#export-div .modal")
 				$("#export-div").prepend(table);
 				$("#export-div").prepend($("<h2>").text(day));
-
 			}
+		}
+		if (withDetail) {
+			console.log(phoneNumbers);
+			const table = $("<table>").css('border-collapse', 'collapse');
+			Object.keys(phoneNumbers).sort().forEach(d => {
+				table.append($("<tr>")
+							 .append($("<td>").css("border", "1px solid black").text(d))
+							 .append($("<td>").css("border", "1px solid black").text(phoneNumbers[d].join(", ")))
+							);
+			});
+			$("#export-div").prepend(table);
+			$("#export-div").prepend($("<h2>").css('text-transform', 'none').text("Liste des numéros de téléphone"));
+			
 		}
 	}
 	
@@ -185,7 +222,6 @@ $(function() {
 					tr.addClass(c);
 					tr.append($("<td>").text(stall));
 					tr.append($("<td>").html(infos.start+"h&nbsp;-&nbsp;"+infos.end+"h"));
-					tr.append($("<td>").text(infos.where));
 					tr.append($("<td>").text(infos.description).css("white-space", "pre-line"));
 					tr.append($("<td>").text(enroled+"/"+infos.min));
 					

@@ -7,6 +7,11 @@ $.urlParam = function(name){
     }
 }
 const ref = new Webcom("https://io.datasync.orange.com/base/alb");
+const providerIcons={
+	"google" : "fa fa-google",
+	"facebook" : "fa fa-facebook-official",
+	"password" : "fa fa-envelope"
+};
 let news={};
 let currentUser;
 let currentProfile;
@@ -201,7 +206,9 @@ function checkAuth(error, user) {
 			checkConnected();
 			$(".not-connected").hide();
 			$(".connected").show();
-			$(".pseudo").text(user.providerUid);
+			$(".pseudo").html(user.providerUid);
+			$(".provider").html(`&nbsp;<i class='fa fa-${providerIcons[user.provider]}'></i>`);
+			
 			if (currentUser.providerUid.substr(-14) == '@al-begard.org') {
 				addLogs();			
 				ref.child("users").once("value", (snapshot) => {
@@ -335,6 +342,7 @@ $(function() {
 		$("#login-modal").modal("hide");
 		$("#profile-modal").modal("hide");
 		$("#log-modal").modal("hide");
+		$("#password-lost-modal").modal("hide");
 		$("#chat-modal").modal("show");
 	});
 
@@ -342,6 +350,7 @@ $(function() {
 		$("#register-modal").modal("hide");
 		$("#login-modal").modal("hide");
 		$("#profile-modal").modal("hide");
+		$("#password-lost-modal").modal("hide");
 		$("#chat-modal").modal("hide");
 		$("#log-modal").modal("show");
 	});
@@ -358,21 +367,33 @@ $(function() {
 		}
 		$("#register-modal").modal("hide");
 		$("#login-modal").modal("hide");
+		$("#password-lost-modal").modal("hide");
 		$("#profile-modal").modal("show");
 	});
 
 	$("body").on("click", ".login", (e) => {
 		$("#register-modal").modal("hide");
 		$("#profile-modal").modal("hide");
+		$("#password-lost-modal").modal("hide");
 		$("#login-modal").modal("show");
 	});
 
 	$(".register").on("click", (e) => {
 		$("#login-modal").modal("hide");
 		$("#profile-modal").modal("hide");
+		$("#password-lost-modal").modal("hide");
 		$("#register-modal").modal("show");
 	});
 
+	$(".password-lost").on("click", (e) => {
+		$("#register-modal").modal("hide");
+		$("#login-modal").modal("hide");
+		$("#profile-modal").modal("hide");
+		$("#password-lost-modal").modal("show");
+	});
+
+
+	
 	$(".logout").on("click", (e) => {
 		$("#chat-messages").empty();
 		$("#log-entries").empty();
@@ -440,7 +461,6 @@ $(function() {
 				}
 				ref.child("pseudos").child(pseudo).set(currentUser.uid);
 				const profile = { firstname, lastname, pseudo, mobile, activity, email, provider:  currentUser.provider};
-				console.log(profile);
 				ref.child("users").child(currentUser.uid).update(
 					profile,
 					(error) => {
@@ -456,6 +476,21 @@ $(function() {
 				);
 			}
 		});
+	});
+	$('#password-lost-button').on("click", (e) => {
+		$("#password-lost-error").text("").hide();
+		const email = $("#password-lost-email").val();
+		if (! email || ! email.match(/^\w.*\@.*$/)) {
+			$("#password-lost-error").text("Merci de renseigner un e-mail valide").show();
+		} else {
+			ref.sendPasswordResetEmail(email, function(error, user){
+				if (error) {
+					$("#password-lost-error").text(error).show();
+				} else {
+					$("#password-lost-info").html("Un e-mail vient d'être envoyé pour réinitialiser votre mot de passe. Une fois que vous aurez changé de mot de passe, vous pouvez vous connecter en <a href='#' class='login'>cliquant ici</a>").show();
+				}
+			});
+		}
 	});
 	
 	$('#register-button').on("click", (e) => {
