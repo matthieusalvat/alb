@@ -177,7 +177,7 @@ $(function() {
 			}
 		}
 		if (withDetail) {
-		    const tablePhoneNumbers = $("<table>").css('border-collapse', 'collapse');
+		    const tablePhoneNumbers = $("<table>").addClass("export-table").css('border-collapse', 'collapse');
 		    Object.keys(phoneNumbers).sort().forEach(d => {
 			tablePhoneNumbers.append($("<tr>")
 				     .append($("<td>").css("border", "1px solid black").text(d+"h"))
@@ -186,7 +186,7 @@ $(function() {
 		    });
 		    $("#export-div").prepend(tablePhoneNumbers);
 		    $("#export-div").prepend($("<h2>").css('text-transform', 'none').text("Liste des numéros de téléphone des bénévoles"));
-		    const tableEmails = $("<table>").css('border-collapse', 'collapse');
+		    const tableEmails = $("<table>").addClass("export-table").css('border-collapse', 'collapse');
 		    Object.keys(emails).sort().forEach(d => {
 			tableEmails.append($("<tr>")
 					   .append($("<td>").css("border", "1px solid black").text(d+"h"))
