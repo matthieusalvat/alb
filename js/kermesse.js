@@ -59,10 +59,20 @@ $(function() {
 		}
 		return number;
 	}
+
+	function extractEmail(line) {
+	    let email=null;
+	    if (m=line.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/)) {
+		email=m[0];
+	    }
+	    return email;
+	}
 	
+    
 	function exportPlanning(withDetail) {
 		$("#export-div").empty();
-		phoneNumbers={};
+	    phoneNumbers={};
+	    emails={};
 		for (let day in planning) {
 			if ($("#planning-"+day).length) {
 				for (let stall in planning[day]) {
@@ -79,14 +89,21 @@ $(function() {
 					let customEnrol = (infos.customEnrol || "").split(/\n/);
 					customEnrol=customEnrol.filter(c=>c.match(/\w/));
 					customEnrol.forEach(c=> {
-						let number=extractPhoneNumber(c);
-						if (number) {
-							if (! phoneNumbers[day+" "+infos.start+"-"+infos.end]) {
-								phoneNumbers[day+" "+infos.start+"-"+infos.end]=[];
-							}
-							phoneNumbers[day+" "+infos.start+"-"+infos.end].push(number)
-							
+					    const number=extractPhoneNumber(c);
+					    const email=extractEmail(c);
+					    if (number) {
+						if (! phoneNumbers[day+" "+infos.start+"-"+infos.end]) {
+						    phoneNumbers[day+" "+infos.start+"-"+infos.end]={};
 						}
+						phoneNumbers[day+" "+infos.start+"-"+infos.end][number]=true;
+					    }
+					    if (email) {
+						if (! emails[day+" "+infos.start+"-"+infos.end]) {
+						    emails[day+" "+infos.start+"-"+infos.end]={};
+						}
+						emails[day+" "+infos.start+"-"+infos.end][email]=true;
+					    }
+
 					});
 					let enroled = Object.keys(enrol).length+customEnrol.length;
 					let enroledText="";
@@ -96,12 +113,18 @@ $(function() {
 							if (withDetail && users && users[uid]) {
 								userInfos = users[uid].firstname+" "+users[uid].lastname+" "+users[uid].email+" "+users[uid].mobile;
 								if (users[uid].mobile) {
-									number=users[uid].mobile.replace(/[^\d]*/g, "");
-									if (! phoneNumbers[day+" "+infos.start+"-"+infos.end]) {
-										phoneNumbers[day+" "+infos.start+"-"+infos.end]=[];
-									}
-									phoneNumbers[day+" "+infos.start+"-"+infos.end].push(number)
+								    number=users[uid].mobile.replace(/[^\d]*/g, "");
+								    if (! phoneNumbers[day+" "+infos.start+"-"+infos.end]) {
+									phoneNumbers[day+" "+infos.start+"-"+infos.end]={};
+								    }
+								    phoneNumbers[day+" "+infos.start+"-"+infos.end][number]=true;
 								}
+							    if (users[uid].email) {
+								if (! emails[day+" "+infos.start+"-"+infos.end]) {
+								    emails[day+" "+infos.start+"-"+infos.end]={};
+								}
+								emails[day+" "+infos.start+"-"+infos.end][users[uid].email]=true;
+							    }
 								enroledText+='<br>'+userInfos;
 							} else {
 								enroledText+='<br>'+e.pseudo;
@@ -154,17 +177,25 @@ $(function() {
 			}
 		}
 		if (withDetail) {
-			console.log(phoneNumbers);
-			const table = $("<table>").css('border-collapse', 'collapse');
-			Object.keys(phoneNumbers).sort().forEach(d => {
-				table.append($("<tr>")
-							 .append($("<td>").css("border", "1px solid black").text(d))
-							 .append($("<td>").css("border", "1px solid black").text(phoneNumbers[d].join(", ")))
-							);
-			});
-			$("#export-div").prepend(table);
-			$("#export-div").prepend($("<h2>").css('text-transform', 'none').text("Liste des numéros de téléphone"));
-			
+		    const tablePhoneNumbers = $("<table>").css('border-collapse', 'collapse');
+		    Object.keys(phoneNumbers).sort().forEach(d => {
+			tablePhoneNumbers.append($("<tr>")
+				     .append($("<td>").css("border", "1px solid black").text(d+"h"))
+				     .append($("<td>").css("border", "1px solid black").text(Object.keys(phoneNumbers[d]).join(", ")))
+				    );
+		    });
+		    $("#export-div").prepend(tablePhoneNumbers);
+		    $("#export-div").prepend($("<h2>").css('text-transform', 'none').text("Liste des numéros de téléphone des bénévoles"));
+		    const tableEmails = $("<table>").css('border-collapse', 'collapse');
+		    Object.keys(emails).sort().forEach(d => {
+			tableEmails.append($("<tr>")
+					   .append($("<td>").css("border", "1px solid black").text(d+"h"))
+					   .append($("<td>").css("border", "1px solid black").text(Object.keys(emails[d]).join(", ")))
+				    );
+		    });
+		    $("#export-div").prepend(tableEmails);
+		    $("#export-div").prepend($("<h2>").css('text-transform', 'none').text("Liste des e-mails des bénévoles"));
+		    
 		}
 	}
 	
